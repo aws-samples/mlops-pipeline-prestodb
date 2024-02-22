@@ -1,0 +1,79 @@
+general:
+  pipeline_name: "mlops-pipeline-presto" ## set up general information for the 
+  prefix: "mlops-pipeline-model" ## prefix to the pipeline name
+  model_group: "mlops-presto-model-registry"
+  model_name: "mlops-presto" ## represents the model name to be created during the batch transform pipeline
+  endpoint_config_name: "random-forest-classifier"
+  endpoint_name: "mlops-realtime-ep"
+  transform_step_name: "mlops-RandomForestTransform"
+  transform_pipeline_name: "sagemaker-batch-inference"
+
+ 
+# AWS and SageMaker settings
+aws:
+  region: 'us-east-1'
+  # uncomment and set the Role ARN if not running on sagemaker - make sure this execution role has the expected permissions
+  sagemaker_execution_role: 'arn:aws:iam::597703351594:role/service-role/AmazonSageMaker-ExecutionRole-20230918T115140' ## your execution role
+
+## User needs to configure the following
+pipeline_parameters:
+    presto_host: '3.93.186.209' ## add the prefix for all your data management/storage
+    port_parameter: '8080'
+    user_parameter: 'ec2-user'
+    execution_display_name: 'executeMLOPs-pipeline' ## name of the execution of the pipeline
+    
+training_params:
+    training_target: 'high_value_order' ## represents the target
+    training_features:
+        - 'total_extended_price'
+        - 'avg_discount'
+        - 'total_quantity' ##, feature2, feature2, ... add more based on your training job, add more features here
+    
+## represents all parameters being used in the training job (configurable by the user)
+training_args:
+    n_estimators: 75
+    max_depth: 10
+    min_samples_split: 2
+    max_features: "sqrt"
+
+## represents the instance types, and different
+input_params:
+    processing_instance_type: 'ml.c5.xlarge'
+    training_instance_type: 'ml.m5.xlarge'
+    inference_instance_type: 'ml.m5.xlarge'
+    accuracy_condition_threshold: 0.7
+    maxium_parallel_training_jobs: 1
+    maxium_training_jobs: 2
+    instance_count: 1 
+    ## represents the instance count for the transformer object
+
+## represents the pipeline tags to be used during the register, transform model steps and pipeline upsert execution
+pipeline_tags:
+    ## multiple keys: same multiple keys: 
+    register_model_tags: 
+        - Key: 'team'
+          Value: 'mlops-model'
+    transform_model_tags: 
+        - Key: 'transform-center'
+          Value: 'mlops-transform-model'
+    pipeline_upsert_tags: 
+        - Key: 'project-execution'
+          Value: 'start-pipeline'
+    sklearn_processor_tags:
+        - Key: 'team-register'
+          Value: 'mlops-worklow-processing'
+    sklearn_estimator_tags:
+        - Key: 'team-register'
+          Value: 'mlops-estimator'
+    transformer_pipeline_upsert_tags: 
+        - Key: 'team-register'
+          Value: 'team-mlops-execution-transformer'
+    
+
+## section that enables container to run notebooks and python scripts automatically 
+dir_scripts:
+    preprocess_script: "code/presto_preprocess.py" ## represents the pre processing script 
+    evaluation_script: "code/evaluate.py" ## represents the evaluation script for the evaluate step
+    batch_transform_script: "code/batch_inf_presto_data.py" ## data prep for batch transform
+    batch_inference: "code/inference.py" ## represents training script with inference logic for batch transform
+    training_script: "code/training_script.py" ## represents the training script
