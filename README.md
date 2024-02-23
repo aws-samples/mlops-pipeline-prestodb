@@ -116,16 +116,45 @@ This repository contains three notebooks that demo the capabilities of SageMaker
 
 These notebooks demonstrate how SageMaker Pipelines can be used to create a generic binary classification machine learning pipeline using Random Forest from order data retrieved by Presto. 
 
-* mlops_pipeline_train_pipeline_0: The purpose of this notebook is to demonstrate how SageMaker Pipelines can be used to create a generic Random Forest training pipeline that preprocesses, trains, tunes, evaluates and registers new machine learning models with the SageMaker model registry, that is reusable across teams, customers and use cases. All scripts to preprocess the data and evaluate the trained model have been prepared in advance and are available in the code folder
-* mlops_pipeline_batch_transform_1: This notebook shows how to create a pipeline that reads the latest model registered in a model registry and perform batch transformation on data.
-* mlops_pipeline_model_deploy_2: This notebook shows how to create a pipeline that deploys the latest model registered in a model registry as a real time endpoint for inference
+* [mlops_pipeline_train_pipeline_0](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/mlops_pipeline_train_pipeline_0.ipynb): The purpose of this notebook is to demonstrate how SageMaker Pipelines can be used to create a generic Random Forest training pipeline that preprocesses, trains, tunes, evaluates and registers new machine learning models with the SageMaker model registry, that is reusable across teams, customers and use cases. All scripts to preprocess the data and evaluate the trained model have been prepared in advance and are available in the code folder
+* [mlops_pipeline_batch_transform_1](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/mlops_pipeline_batch_transform_1.ipynb): This notebook shows how to create a pipeline that reads the latest model registered in a model registry and perform batch transformation on data.
+* [mlops_pipeline_model_deploy_2](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/mlops_pipeline__model_deploy_2.ipynb): This notebook shows how to create a pipeline that deploys the latest model registered in a model registry as a real time endpoint for inference
+
+### Running Notebooks
+
+To get started, navigate to the notebook and proceed to configure your parameters in the `config.yml` file, where you can tailor the settings for your pipeline. Ensure to update the feature and target parameters according to your desired model predictions. If you're using a Presto instance, it's essential to ensure accurate configuration of the host, port, and user parameters.
+
+Additionally, the `config.yml` file provides flexibility to modify general pipeline and training parameters as needed. Once configurations are set, we can proceed with the first notebook
+
+#### [Training Pipeline](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/mlops_pipeline_train_pipeline_0.ipynb)
+
+This notebook demonstrates the capabilities of SageMaker Pipelines in crafting reusable machine learning pipelines. The pipeline orchestrates various steps, including preprocessing, training, evaluation, and model registration with the SageMaker Model Registry.
+
+In this notebook, we follow these steps:
+- Load the `config.yml` file containing crucial information used across the pipeline.
+- Connect to Presto and query data for preprocessing, subsequently transferring it to an Amazon S3 bucket where it's partitioned into train, test, and validation datasets.
+- Utilize the train and validation outputs from the preprocessing stage to train a model.
+- Evaluate the model's performance, ensuring its accuracy exceeds a configurable threshold before registering it with the model registry.
+
+#### [Batch Transform Pipeline](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/mlops_pipeline_batch_transform_1.ipynb)
+
+This notebook illustrates the creation of a pipeline designed specifically for batch transformation of data, assuming a previously trained model is registered in a model registry.
+
+Here, we assume that the training pipeline has successfully trained a model, registered it in the Model Registry, and obtained approval for inference. The workflow involves:
+- Employing a pre-trained model, creating, and registering it in a new Model Registry.
+- Executing batch inference using the approved model on a dataset stored in an S3 bucket, providing it as input to the pipeline.
+- Processing and sending batch data from PrestoDB to Amazon S3.
+- Utilizing the batch data for the batch transform and inference step, recording start and end times, and sending the output to an S3 path.
+
+#### [Real-time Endpoint Pipeline](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/mlops_pipeline__model_deploy_2.ipynb)
+
+This constitutes the third part of our solution, where we:
+- Utilize the latest approved model to create a real-time endpoint.
+- Run inferences to test the real-time deployed endpoint.
 
 ## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+Please read our [contributing guidelines](https://github.com/aws/amazon-sagemaker-examples/blob/master/CONTRIBUTING.md)
+if you'd like to open an issue or submit a pull request.
 
 ## Security
 
