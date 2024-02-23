@@ -1,16 +1,8 @@
-import re
-import os
-import sys
 import yaml
-import math
 import boto3
 import logging
 import requests
-import posixpath
-import subprocess
-import unicodedata
 from typing import Dict
-from pathlib import Path
 from botocore.exceptions import NoCredentialsError
 
 ## define the logger

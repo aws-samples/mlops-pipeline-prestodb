@@ -58,8 +58,6 @@ def connect_presto_server(catalog, schema):
             auth=prestodb.auth.BasicAuthentication(presto_username, presto_password)
         )
         logger.info(f"user name used to connect to the presto server: {presto_username}...")
-        logger.info("Connected successfully to Presto server.")
-        return conn
     else:
         conn = prestodb.dbapi.connect(
             host=args.host,

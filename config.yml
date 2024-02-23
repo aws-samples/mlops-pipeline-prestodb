@@ -1,79 +1,117 @@
-general:
-  pipeline_name: "mlops-pipeline-presto" ## set up general information for the 
-  prefix: "mlops-pipeline-model" ## prefix to the pipeline name
-  model_group: "mlops-presto-model-registry"
-  model_name: "mlops-presto" ## represents the model name to be created during the batch transform pipeline
-  endpoint_config_name: "random-forest-classifier"
-  endpoint_name: "mlops-realtime-ep"
-  transform_step_name: "mlops-RandomForestTransform"
-  transform_pipeline_name: "sagemaker-batch-inference"
-
- 
 # AWS and SageMaker settings
 aws:
-  region: 'us-east-1'
-  # uncomment and set the Role ARN if not running on sagemaker - make sure this execution role has the expected permissions
-  sagemaker_execution_role: 'arn:aws:iam::597703351594:role/service-role/AmazonSageMaker-ExecutionRole-20230918T115140' ## your execution role
+  region: us-east-1
+  # execution role
+  sagemaker_execution_role: arn:aws:iam::015469603702:role/SageMakerRepoRole
+  s3_bucket: sagemaker-{region}-{account_id} # region and account id are automatically replaced
+  s3_prefix: mlops-pipeline-model 
 
+presto:
+  host: 3.93.186.209 
+  parameter: "8080"
+  user: ec2-user
+  
 ## User needs to configure the following
-pipeline_parameters:
-    presto_host: '3.93.186.209' ## add the prefix for all your data management/storage
-    port_parameter: '8080'
-    user_parameter: 'ec2-user'
-    execution_display_name: 'executeMLOPs-pipeline' ## name of the execution of the pipeline
-    
-training_params:
-    training_target: 'high_value_order' ## represents the target
-    training_features:
-        - 'total_extended_price'
-        - 'avg_discount'
-        - 'total_quantity' ##, feature2, feature2, ... add more based on your training job, add more features here
-    
-## represents all parameters being used in the training job (configurable by the user)
-training_args:
-    n_estimators: 75
-    max_depth: 10
-    min_samples_split: 2
-    max_features: "sqrt"
+pipeline:
+  training_pipeline_name: mlops-pipeline-presto 
+  transform_pipeline_name: mlops-batch-inference
+  execution_display_name: mlops-prestodb-pipeline 
+  tags:
+  - Key: team
+    Value: my-team
+  
+training_step:
+  training_target: high_value_order ## target name (the ML model is trained to predict this column)
+  training_features:
+  - total_extended_price
+  - avg_discount
+  - total_quantity ##, feature2, feature2, ... add more based on your training job, add more features here
+  sklearn_framework_version: 0.23-1
+  n_estimators: 75
+  max_depth: 10
+  min_samples_split: 2
+  max_features: sqrt
+  instance_type: ml.m5.xlarge
+  instance_count: 1
+  base_job_name: rf-sklearn
+  tags:
+  - Key: team
+    Value: my-team
 
-## represents the instance types, and different
-input_params:
-    processing_instance_type: 'ml.c5.xlarge'
-    training_instance_type: 'ml.m5.xlarge'
-    inference_instance_type: 'ml.m5.xlarge'
-    accuracy_condition_threshold: 0.7
-    maxium_parallel_training_jobs: 1
-    maxium_training_jobs: 2
-    instance_count: 1 
-    ## represents the instance count for the transformer object
+tuning_step:
+  step_name: Train-And-Tune-Model
+  maximum_parallel_training_jobs: 1
+  maximum_training_jobs: 2
+  hyperparam_ranges:
+    n_estimators:
+    - 10
+    - 150
+    max_depth:
+    - 3
+    - 20
+    min_samples_split:
+    - 2
+    - 10
+    max_features:
+    - sqrt
+    - log2
+  metric_definitions:
+  - Name: 'validation:auc'
+    Regex: 'auc (\S+)'
+  objective_metric_name: "validation:auc"
 
-## represents the pipeline tags to be used during the register, transform model steps and pipeline upsert execution
-pipeline_tags:
-    ## multiple keys: same multiple keys: 
-    register_model_tags: 
-        - Key: 'team'
-          Value: 'mlops-model'
-    transform_model_tags: 
-        - Key: 'transform-center'
-          Value: 'mlops-transform-model'
-    pipeline_upsert_tags: 
-        - Key: 'project-execution'
-          Value: 'start-pipeline'
-    sklearn_processor_tags:
-        - Key: 'team-register'
-          Value: 'mlops-worklow-processing'
-    sklearn_estimator_tags:
-        - Key: 'team-register'
-          Value: 'mlops-estimator'
-    transformer_pipeline_upsert_tags: 
-        - Key: 'team-register'
-          Value: 'team-mlops-execution-transformer'
-    
+evaluation_step:
+  step_name: Evaluate-Model
+  accuracy_condition_threshold: 0.7
+  instance_type: ml.m5.xlarge
+  instance_count: 1
+  evaluation_filename: evaluation.json
+  
+transform_step:
+  step_name: mlops-RandomForestTransform
+  instance_type: ml.m5.xlarge
+  tags:
+  - Key: team
+    Value: my-team
+
+data_processing_step:
+  step_name: "Preprocess-Data"
+  processing_instance_type: ml.c5.xlarge
+  instance_count: 1
+  tags:
+  - Key: team
+    Value: my-team
+  
+register_model_step:
+  step_name: Register-Model
+  model_registry: default-registry
+  model_group: mlops-presto-model-registry
+  model_name: mlops-presto 
+  approval_status: PendingManualApproval
+  inference_instance_types:
+  - ml.t2.medium
+  - ml.m5.xlarge
+  - ml.m5.large
+  transform_instance_types:
+  - ml.m5.xlarge
+  tags:
+  - Key: team
+    Value: my-team
+
+fail_step:
+  step_name: AccuracyThresholdFailed
+
+condition_step:
+  step_name: Accuracy-Condition
+
+realtime_endpoint:
+  endpoint_config_name: random-forest-classifier
+  endpoint_name: mlops-realtime-ep    
 
 ## section that enables container to run notebooks and python scripts automatically 
-dir_scripts:
-    preprocess_script: "code/presto_preprocess.py" ## represents the pre processing script 
-    evaluation_script: "code/evaluate.py" ## represents the evaluation script for the evaluate step
-    batch_transform_script: "code/batch_inf_presto_data.py" ## data prep for batch transform
-    batch_inference: "code/inference.py" ## represents training script with inference logic for batch transform
-    training_script: "code/training_script.py" ## represents the training script
+scripts:
+    preprocess_data: code/presto_preprocess_for_training.py ## represents the pre processing script 
+    evaluation: code/evaluate.py ## represents the evaluation script for the evaluate step
+    batch_transform_get_data: code/presto_preprocess_for_batch_inference.py ## data prep for batch transform
+    batch_inference: code/inference.py ## represents training script with inference logic for batch transform
+    training_script: code/training.py ## represents the training script
