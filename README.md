@@ -130,8 +130,9 @@ The SageMaker execution role used to run this solution should have permissions t
 
 Setup a secret in Secrets Manager for the PrestoDB username and password. Call the secret `prestodb-credentials` and add a `username` field to to it and a `password` field to it.
 
-
 ### Steps to run
+
+1. Clone the [code repo](https://github.com/aws-samples/mlops-pipeline-prestodb.git) on SageMaker Studio.
 
 1. Edit the [`config`](./config.yml) as per PrestoDB connection, IAM role and other pipeline details such as instance types for various pipeline steps etc.
 

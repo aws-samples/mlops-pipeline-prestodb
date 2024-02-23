@@ -70,6 +70,9 @@ evaluation_step:
 transform_step:
   step_name: mlops-RandomForestTransform
   instance_type: ml.m5.xlarge
+  instance_count: 1
+  num_hours_to_go_back: 1
+  output_prefix: batch_transform_output
   tags:
   - Key: team
     Value: my-team
@@ -84,8 +87,7 @@ data_processing_step:
   
 register_model_step:
   step_name: Register-Model
-  model_registry: default-registry
-  model_group: mlops-presto-model-registry
+  model_group: mlops-presto
   model_name: mlops-presto 
   approval_status: PendingManualApproval
   inference_instance_types:
@@ -106,7 +108,10 @@ condition_step:
 
 realtime_endpoint:
   endpoint_config_name: random-forest-classifier
-  endpoint_name: mlops-realtime-ep    
+  endpoint_name: mlops-realtime-ep
+  instance_type: ml.m5.xlarge
+  min_instance_count: 1
+  max_instance_count: 3
 
 ## section that enables container to run notebooks and python scripts automatically 
 scripts:

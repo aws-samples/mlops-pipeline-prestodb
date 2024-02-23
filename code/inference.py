@@ -47,7 +47,7 @@ def predict_fn(input_data, model):
     """
     
     # at the beginning of the batch data, start the record
-    start_time_str = os.environ.get('START_TIME', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    start_time_str = os.environ.get('START_TIME_UTC', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     start_time = datetime.datetime.strptime(start_time_str, '%Y-%m-%d %H:%M:%S')
     logger.info(f"Prediction start time: {start_time}")
         
@@ -56,7 +56,7 @@ def predict_fn(input_data, model):
     predictions = model.predict(features_df)
     features_df['prediction'] = predictions.tolist()
     
-    end_time_str = os.environ.get('END_TIME', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    end_time_str = os.environ.get('END_TIME_UTC', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     end_time = datetime.datetime.strptime(end_time_str, '%Y-%m-%d %H:%M:%S')
     duration = end_time - start_time
     logger.info(f"Prediction end time: {end_time}")

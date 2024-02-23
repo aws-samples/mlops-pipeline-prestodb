@@ -1,4 +1,5 @@
 import yaml
+import json
 import boto3
 import logging
 import requests
@@ -9,8 +10,23 @@ from botocore.exceptions import NoCredentialsError
 logging.basicConfig(format='[%(asctime)s] p%(process)s {%(filename)s:%(lineno)d} %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 # utility functions
+
+make_s3_prefix = lambda x, dttm: f"{x}/yyyy={dttm.year}/mm={dttm.month}/dd={dttm.day}/hh={dttm.hour}/mm={dttm.minute}"
+
+def print_pipeline_execution_summary(steps, name):
+    failed_steps = 0
+    steps_that_had_to_retried = 0
+    logger.info(f"pipeline steps={json.dumps(steps, indent=2, default=str)}")
+    for s in steps:
+        if s['StepStatus'] != 'Succeeded':
+            logger.error(f"FAILED STEP: {s}")
+            failed_steps += 1
+        if s['AttemptCount'] > 1:
+            logger.error(f"Retried STEP: {s}")
+            steps_that_had_to_retried += 1
+    logger.info(f"for pipeline={name}, failed_steps={failed_steps}, steps_that_had_to_retried={steps_that_had_to_retried}")
+
 def load_config(config_file) -> Dict:
     """
     Load configuration from a local file or an S3 URI.
