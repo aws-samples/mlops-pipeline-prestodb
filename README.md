@@ -144,7 +144,8 @@ Setup a secret in Secrets Manager for the PrestoDB username and password. Call t
 1. Run the [`2_realtime_inference`](./2_realtime_inference.ipynb) notebook to deploy the model as a SageMaker endpoint for realtime inference.
 
 ## Contributing
-Please read our [contributing guidelines](https://github.com/aws/amazon-sagemaker-examples/blob/master/CONTRIBUTING.md)
+
+Please read our [contributing guidelines](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/master/CONTRIBUTING.md)
 if you'd like to open an issue or submit a pull request.
 
 ## Security

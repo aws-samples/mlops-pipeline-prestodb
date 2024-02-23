@@ -18,6 +18,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--host', type=str, required=True)
 parser.add_argument('--port', type=int, required=True) 
 parser.add_argument('--user', type=str, required=True)
+parser.add_argument('--region', type=str, required=True)
+parser.add_argument('--presto-credentials-key', type=str, required=True)
 
 args = parser.parse_args()
 
@@ -26,8 +28,7 @@ PRESTO_CREDENTIALS = False
 client = boto3.client('secretsmanager', region_name='us-east-1')
 response = client.get_secret_value(SecretId="presto-credentials")
 secrets_credentials = json.loads(response['SecretString'])
-# presto_password = secrets_credentials['password']
-presto_password = 'incorrect_password'
+presto_password = secrets_credentials['password']
 presto_username = secrets_credentials['username']
 
 ## Install dependencies
@@ -152,6 +153,7 @@ def save_dataframes(train_data, validation_data, test_data, base_dir="DSG_order"
 
 if __name__ == "__main__":
     logger.info("Starting data extraction and preprocessing pipeline.")
+    logger.info(f"boto3 version={boto3.__version__}, pandas version={pd.__version__}")
     
     # Fetch data from Presto
     df = fetch_data_from_presto()

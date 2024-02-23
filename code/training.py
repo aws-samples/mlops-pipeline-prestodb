@@ -16,8 +16,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
 
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+## define the logger
+logging.basicConfig(format='[%(asctime)s] p%(process)s {%(filename)s:%(lineno)d} %(levelname)s - %(message)s', level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Parse arguments from the command line specifically for the target and the features
 parser = argparse.ArgumentParser()
@@ -96,10 +97,10 @@ def train_and_evaluate(features, target, model_dir):
     auc_score = roc_auc_score(y_test, y_pred_proba)
 
     # Log the AUC score and evaluation metrics in the expected format
-    print(f"auc {auc_score}")
-    print(classification_report(y_test, y_pred))
-    print("Confusion Matrix:")
-    print(confusion_matrix(y_test, y_pred))
+    logger.info(f"auc {auc_score}")
+    logger.info(classification_report(y_test, y_pred))
+    logger.info("Confusion Matrix:")
+    logger.info(confusion_matrix(y_test, y_pred))
     
     # list of feature names used in training
     config = {'TARGET': TARGET,
@@ -121,9 +122,9 @@ if __name__ == "__main__":
     # Specify features and target
     ## have all variables be abstract and pass features as cli args, and create features array
     features = FEATURES
-    logger.info(f" features of training this random forest classifier -> {features}")
+    logger.info(f"features of training this random forest classifier -> {features}")
     target = TARGET 
-    logger.info(f" target parameter of training this random forest classifier -> {target}")
+    logger.info(f"target parameter of training this random forest classifier -> {target}")
     n_estimators = n_estimators
     max_depth = max_depth
     min_samples_split = min_samples_split

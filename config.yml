@@ -9,7 +9,7 @@ aws:
 presto:
   host: 3.93.186.209 
   parameter: "8080"
-  user: ec2-user
+  presto_credentials: presto-credentials
   
 ## User needs to configure the following
 pipeline:

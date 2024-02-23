@@ -12,24 +12,9 @@ import pandas as pd
 from io import StringIO
 
 
-# Parse arguments from the command line
-parser = argparse.ArgumentParser()
-parser.add_argument('--host', type=str, required=True)
-parser.add_argument('--port', type=int, required=True) 
-parser.add_argument('--user', type=str, required=True)
-## add start time and end time as str -- todo
-# parser.add_argument('--dataframe-path', type=str, required=True, help='The local path to the CSV file to upload')
-
-args = parser.parse_args()
-
 ## collect snowflake credentials from Secrets Manager
 PRESTO_CREDENTIALS = False
-client = boto3.client('secretsmanager', region_name='us-east-1')
-response = client.get_secret_value(SecretId="presto-credentials")
-secrets_credentials = json.loads(response['SecretString'])
-# presto_password = secrets_credentials['password']
-presto_password = 'incorrect_password'
-presto_username = secrets_credentials['username']
+
 
 ## Install dependencies
 subprocess.check_call([sys.executable, "-m", "pip", "install", "presto-python-client==0.8.4", "boto3", "pandas"])
@@ -43,41 +28,39 @@ import prestodb
 from prestodb import dbapi
 
 ## function to connect to the presto server
-def connect_presto_server(catalog, schema):
+def connect_presto_server(args, username, password, catalog, schema):
     """
     Connect to the Presto server.
     """
     
-    if PRESTO_CREDENTIALS: 
+    if password: 
         ## connect to presto using password authentication
         conn = prestodb.dbapi.connect(
             host=args.host,
             port=args.port,
-            user=presto_username,
+            user=username,
             catalog=catalog,
             schema=schema,
             http_scheme='https',
-            auth=prestodb.auth.BasicAuthentication(presto_username, presto_password)
+            auth=prestodb.auth.BasicAuthentication(username, password)
         )
-        logger.info(f"user name used to connect to the presto server: {presto_username}...")
-        logger.info("Connected successfully to Presto server.")
-        return conn
+        logger.info(f"user name used to connect to the presto server: {username}...")
     else:
         conn = prestodb.dbapi.connect(
             host=args.host,
             port=args.port,
-            user=args.user,
+            user=username,
             catalog=catalog,
             schema=schema,
     )
     logger.info("Connected successfully to Presto server.")
     return conn
 
-def fetch_data_from_presto():
+def fetch_data_from_presto(args, username, password):
     """
     Fetch data from Presto and return it as a pandas DataFrame.
     """
-    conn = connect_presto_server('tpch', 'tiny')  # Example catalog and schema
+    conn = connect_presto_server(args, username, password, 'tpch', 'tiny')  # Example catalog and schema
     cur = conn.cursor()
 
     query = """
@@ -115,38 +98,35 @@ def fetch_data_from_presto():
     logger.info("Data fetched successfully.")
     return df
 
-
-def upload_dataframe_to_s3(df):
-    """
-    Uploads the given DataFrame to an S3 bucket.
-    """
-    
-    # os.makedirs(base_dir, exist_ok=True)
-    
-    batch_dir = "/opt/ml/processing/batch"
-    
-    paths = {
-        "batch_data": os.path.join(batch_dir, "batch_data.csv"),
-    }
-    
-    csv_buffer = StringIO()
-    df.to_csv(paths["batch_data"], index=False)
-
-
-    csv_buffer = StringIO()
-    
-    preview_buffer = StringIO()
-    df.head(10).to_csv(preview_buffer, index=False)
-    logger.info(f"Preview of the first 10 rows of the batch data for visibility:\n{preview_buffer.getvalue()}")
-
-    logger.info(f"batch data is saved to --> {paths}")
-    return paths
-
 if __name__ == "__main__":
+    # Parse arguments from the command line
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host', type=str, required=True)
+    parser.add_argument('--port', type=int, required=True) 
+    parser.add_argument('--user', type=str, required=True)
+    parser.add_argument('--region', type=str, required=True)
+    parser.add_argument('--presto-credentials-key', type=str, required=True)
+
+    ## add start time and end time as str -- todo
+    # parser.add_argument('--dataframe-path', type=str, required=True, help='The local path to the CSV file to upload')
+
+    args = parser.parse_args()
+
+    client = boto3.client('secretsmanager', region_name='us-east-1')
+    response = client.get_secret_value(SecretId="presto-credentials")
+    secrets_credentials = json.loads(response['SecretString'])
+    presto_password = secrets_credentials.get('password')
+    presto_username = secrets_credentials.get('username', 'ec2-user')
+
+    logger.info(f"boto3 version={boto3.__version__}, pandas version={pd.__version__}")
     # Fetch data from Presto and store it in a DataFrame
-    df = fetch_data_from_presto()
+    df = fetch_data_from_presto(args, username, password)
 
-    # Upload the DataFrame to S3
-    upload_dataframe_to_s3(df)
+    # save dataframe locally so that the processing job can upload it to S3
+    batch_dir = "/opt/ml/processing/batch"
+    fpath = os.path.join(batch_dir, "batch_data.csv")
+    df.to_csv(fpath, index=False)
+    logger.info(f"batch data is saved to --> {fpath}")
 
+    logger.info(f"Preview of the first 10 rows of the batch data for visibility:\n{df.head(10)}")
 

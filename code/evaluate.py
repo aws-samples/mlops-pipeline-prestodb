@@ -1,12 +1,11 @@
 """Evaluation script for measuring model accuracy."""
-import os
+
 import json
 import joblib
 import logging
-import argparse
 import pathlib
-import pickle
 import tarfile
+import argparse
 import numpy as np
 import pandas as pd
 from ast import literal_eval
@@ -24,28 +23,29 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
 
-# Parse arguments from the command line specifically for the target and the features
-parser = argparse.ArgumentParser()
-parser.add_argument('--target', type=str, required=True)
-parser.add_argument('--features', type=str, required=True) 
-
-# Parse arguments
-args = parser.parse_args()
-
-# Extract and use the arguments
-TARGET = args.target
-
-# Convert FEATURES from string to list to process for this evaluation script
-try:
-    FEATURES = literal_eval(args.features)
-    if not isinstance(FEATURES, list):
-        raise ValueError("--features argument must be a list of feature names.")
-except (ValueError, SyntaxError) as e:
-    logger.error(f"Error parsing --features argument: {e}")
-    raise
-
 
 if __name__ == "__main__":
+    # Parse arguments from the command line specifically for the target and the features
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--target', type=str, required=True)
+    parser.add_argument('--features', type=str, required=True) 
+
+    # Parse arguments
+    args = parser.parse_args()
+    logger.info(f"args={args}")
+
+    # Extract and use the arguments
+    target = args.target
+
+    # Convert features from string to list to process for this evaluation script
+    try:
+        features = literal_eval(args.features)
+        if not isinstance(features, list):
+            raise ValueError("--features argument must be a list of feature names.")
+    except (ValueError, SyntaxError) as e:
+        logger.error(f"Error parsing --features argument: {e}")
+        raise
+
     model_path = "/opt/ml/processing/model/model.tar.gz"
     with tarfile.open(model_path) as tar:
         tar.extractall(path=".")
@@ -71,8 +71,6 @@ if __name__ == "__main__":
     test_df = pd.read_csv(test_data_path)
     logger.info(f"test df -> {test_df.head(5)}")
 
-    features = FEATURES
-    target = TARGET
     # Prepare data
     # X_test = test_df[features].values.reshape(-1, 1)  # Reshaping this to make it 2D
     X_test = test_df[features].values
