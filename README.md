@@ -124,7 +124,8 @@ We will use the built-in datasets available in PrestoDB for this repo. Following
 
 #### IAM Role
 
-The SageMaker execution role used to run this solution should have permissions to launch, list and describes various SageMaker services and artifacts. ***Until a AWS CloudFormation template is provided which creates the role with the requisite IAM permissions, use a SageMaker execution role that `AmazonSageMakerFullAccess` AWS managed policy for your execution role.
+The SageMaker execution role used to run this solution should have permissions to launch, list and describes various SageMaker services and artifacts. ***Until a AWS CloudFormation template is provided which creates the role with the requisite IAM permissions, use a SageMaker execution role that has `AmazonSageMakerFullAccess`and `SecretsManagerReadWrite` AWS managed policies for your execution role.
+
 
 #### AWS Secrets Manager
 
