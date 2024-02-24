@@ -1,14 +1,14 @@
 # Amazon SageMaker MLOps pipeline with PrestoDB
 
-Amazon SageMaker can be used to create end-to-end MLOps pipelines that include steps for data preparation, model training, tuning, evaluation and batch transform. In this repo we show how you can read raw data available in [`PrestoDB`](https://prestodb.io/) via SageMaker Processing Jobs, then train a binary classification model using SageMaker Training Jobs, tune the model using SageMaker Automatic Model Tuning and then run a batch transform for inference. All these steps are tied together via two SageMaker Pipelines: a training pipeline and a batch inference pipeline. Finally, we also demonstrate deplying the trained model on a SageMaker Endpoint for realtime inference.
+Amazon SageMaker can be used to create end-to-end MLOps pipelines that include steps for data preparation, model training, tuning, evaluation and batch transform. In this repo we show how you can read raw data available in [`PrestoDB`](https://prestodb.io/) via SageMaker Processing Jobs, then train a binary classification model using SageMaker Training Jobs, tune the model using SageMaker Automatic Model Tuning and then run a batch transform for inference. All these steps are tied together via two SageMaker Pipelines: a training pipeline and a batch inference pipeline. Finally, we also demonstrate deploying the trained model on a SageMaker Endpoint for real-time inference.
 
 ## Getting started
 
-To run this code follow the prerequsites below and then run the notebooks in the order specified.
+To run this code follow the prerequisites below and then run the notebooks in the order specified.
 
-### Prerequsites
+### Prerequisites
 
-The following prerequsites need to be in place before running this code.
+The following prerequisites need to be in place before running this code.
 
 #### PrestoDB
 
@@ -16,13 +16,13 @@ We will use the built-in datasets available in PrestoDB for this repo. Following
 
 1. Create a security group to limit access to Presto. Create a security group called **MyPrestoSG** with two inbound rules to only allow access to Presto.
     - Create the first rule to allow inbound traffic on port 8080 to Anywhere-IPv4
-    - Create the second rule rule to allow allow inbound traffic on port 22 to your IP only. 
+    - Create the second rule rule to allow allow inbound traffic on port 22 to your IP only.
     - You should allow all outbound traffic
 
 1. Spin-up an EC2 instance with the following settings. This instance is used to run PrestoDB.
     - AMI: Amazon Linux 2 AMI (HVM)
-    - SSD Volume Type – ami-0b1e534a4ff9019e0 (64-bit x86) / ami-0a5c7dec456e07a8d (64-bit Arm)
-    - Instance type: t3a.medium
+    - SSD Volume Type – `ami-0b1e534a4ff9019e0` (64-bit x86) / `ami-0a5c7dec456e07a8d` (64-bit Arm)
+    - Instance type: `t3a.medium`
     - Subnet: Pick a public one and assign a public IP
     - IAM role: None
     - EBS: 8 GB gp2
@@ -30,16 +30,16 @@ We will use the built-in datasets available in PrestoDB for this repo. Following
 
 1. Install the JVM and Presto binaries.
 
-    - Once the instance state changes to “running” and status checks are passed. Try to ssh into your EC2 instance with:
+    - Once the instance state changes to “running” and status checks are passed. Try to `ssh` into your EC2 instance with:
 
         ```{.bash}
         ssh ec2-user@{public-ip} -i {location}
         ```
-    
+
     - If everything goes well, you will see the shell of your EC2 instance.
 
     - Install Presto 330 on the EC2 instance. Presto 330 requires the long-term support version Java 11. So let’s install it. First elevate yourself to root
-    
+
         ```{.bash}
         sudo su
         ```
@@ -51,8 +51,8 @@ We will use the built-in datasets available in PrestoDB for this repo. Following
         yum install java-11-amazon-corretto.x86_64
         java --version
         ```
-    
-    - Now download the PrestoDB release binaries into the EC2 instance. You can download the Presto release binaries from the Maven Central Repository with wget. Then extract the archive to a directory named presto-server-330.
+
+    - Now download the PrestoDB release binaries into the EC2 instance. You can download the Presto release binaries from the Maven Central Repository with `wget`. Then extract the archive to a directory named presto-server-330.
 
         ```{.bash}
         wget https://repo.maven.apache.org/maven2/io/prestosql/presto-server/330/presto-server-330.tar.gz 
@@ -69,9 +69,9 @@ We will use the built-in datasets available in PrestoDB for this repo. Following
     mkdir etc
     ```
 
-    - Then create the three files using vim or your favourite text editor.
-        - Presto logging configuration file **etc/config.properties** 
-        
+    - Then create the three files using vim or your favorite text editor.
+        - Presto logging configuration file `etc/config.properties`
+
             ```{.bash}
             coordinator=true
             node-scheduler.include-coordinator=true
@@ -82,13 +82,14 @@ We will use the built-in datasets available in PrestoDB for this repo. Following
             discovery-server.enabled=true
             discovery.uri=http://localhost:8080 
             ```
-        - Presto node configuration: **etc/node.properties** 
-        
+
+        - Presto node configuration: `etc/node.properties`
+
             ```{.bash}
             node.environment=demo 
             ```
 
-        * JVM configuration: **etc/jvm.config** 
+        - JVM configuration: `etc/jvm.config`
         
             ```{.bash}
             -server
@@ -102,8 +103,9 @@ We will use the built-in datasets available in PrestoDB for this repo. Following
             -Djdk.nio.maxCachedBufferSize=2000000
             -Djdk.attach.allowAttachSelf=true 
             ```
-        * Catalog properties file for the TPC-H connector: **etc/catalog/tpch.properties** 
-        
+ 
+        - Catalog properties file for the TPC-H connector: `etc/catalog/tpch.properties` 
+
             ```{.bash}
             connector.name=tpch
             ```
@@ -120,12 +122,11 @@ We will use the built-in datasets available in PrestoDB for this repo. Following
     INFO        main io.prestosql.server.PrestoServer ======== SERVER STARTED  
     ```
 
-1. You have a running instance of PrestoDB! Since you launched PrestoDB on a public subnet and enabled 8080 inbound traffic. You can even access the UI at http://{ec2-public-ip}:8080
+1. You have a running instance of PrestoDB! Since you launched PrestoDB on a public subnet and enabled 8080 inbound traffic. You can even access the UI at `http://{ec2-public-ip}:8080`.
 
 #### IAM Role
 
-The SageMaker execution role used to run this solution should have permissions to launch, list and describes various SageMaker services and artifacts. ***Until a AWS CloudFormation template is provided which creates the role with the requisite IAM permissions, use a SageMaker execution role that has `AmazonSageMakerFullAccess`and `SecretsManagerReadWrite` AWS managed policies for your execution role.
-
+The SageMaker execution role used to run this solution should have permissions to launch, list and describes various SageMaker services and artifacts. ***Until a AWS CloudFormation template is provided which creates the role with the requisite IAM permissions, use a SageMaker execution role that `AmazonSageMakerFullAccess` AWS managed policy for your execution role.
 
 #### AWS Secrets Manager
 
@@ -142,7 +143,7 @@ Setup a secret in Secrets Manager for the PrestoDB username and password. Call t
 
 1. Run the [`1_batch_transform_pipeline.ipynb`](./1_batch_transform_pipeline.ipynb) notebook to launch the batch inference pipeline that reads data from PrestoDB and runs batch inference on it using the most recent `Approved` ML model.
 
-1. Run the [`2_realtime_inference`](./2_realtime_inference.ipynb) notebook to deploy the model as a SageMaker endpoint for realtime inference.
+1. Run the [`2_realtime_inference`](./2_realtime_inference.ipynb) notebook to deploy the model as a SageMaker endpoint for real-time inference.
 
 ## Contributing
 

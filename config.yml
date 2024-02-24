@@ -1,8 +1,10 @@
 # AWS and SageMaker settings
 aws:
   region: us-east-1
-  # execution role
-  sagemaker_execution_role: arn:aws:iam::015469603702:role/SageMakerRepoRole
+  # execution role, replace the role name below with the one you are using
+  sagemaker_execution_role_name: SageMakerRepoRole
+  # the execution role ARN is determined automatically by the code
+  sagemaker_execution_role_arn: arn:aws:iam::{account_id}:role/{role}
   s3_bucket: sagemaker-{region}-{account_id} # region and account id are automatically replaced
   s3_prefix: mlops-pipeline-model 
 
@@ -13,7 +15,7 @@ presto:
   
 ## User needs to configure the following
 pipeline:
-  training_pipeline_name: mlops-pipeline-presto 
+  training_pipeline_name: mlops-pipeline-presto
   transform_pipeline_name: mlops-batch-inference
   execution_display_name: mlops-prestodb-pipeline 
   tags:
