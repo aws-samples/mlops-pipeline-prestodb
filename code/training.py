@@ -103,7 +103,7 @@ if __name__ == "__main__":
 
     # Parse arguments
     args = parser.parse_args()
-    
+    logger.info(f"args={args}")
     # Extract and use the arguments
     target = args.target
 

@@ -20,21 +20,23 @@ if __name__ == "__main__":
     parser.add_argument('--presto_credentials_key', type=str, required=True)
     parser.add_argument('--presto_catalog', type=str, required=True)
     parser.add_argument('--presto_schema', type=str, required=True)
+    parser.add_argument('--query', type=str, help='The PrestoDB query to run')
+    
 
     ## add start time and end time as str -- todo
     # parser.add_argument('--dataframe-path', type=str, required=True, help='The local path to the CSV file to upload')
 
     args = parser.parse_args()
+    logger.info(f"args={args}")
     client = boto3.client('secretsmanager', region_name=args.region)
     response = client.get_secret_value(SecretId=args.presto_credentials_key)
     secrets_credentials = json.loads(response['SecretString'])
     password = secrets_credentials.get('password')
     username = secrets_credentials.get('username', 'ec2-user')
-    logger.info(f"the secrets password recorded.... {username}")
 
-    logger.info(f"boto3 version={boto3.__version__}, pandas version={pd.__version__}")
     # Fetch data from Presto and store it in a DataFrame
     df = fetch_data_from_presto(args, username, password, args.presto_catalog, args.presto_schema, BATCH_INFERENCE_QUERY)
+    logger.info(f"read data of shape={df.shape} for batch inference")
 
     # save dataframe locally so that the processing job can upload it to S3
     batch_dir = "/opt/ml/processing/batch"

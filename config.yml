@@ -2,7 +2,7 @@
 aws:
   region: us-east-1
   # execution role, replace the role name below with the one you are using
-  sagemaker_execution_role_name: <add your role name here>
+  sagemaker_execution_role_name: your-role-name
   # the execution role ARN is determined automatically by the code
   sagemaker_execution_role_arn: arn:aws:iam::{account_id}:role/{role}
   s3_bucket: sagemaker-{region}-{account_id} # region and account id are automatically replaced
@@ -19,7 +19,6 @@ presto:
 pipeline:
   training_pipeline_name: mlops-pipeline-presto
   transform_pipeline_name: mlops-batch-inference
-  execution_display_name: mlops-prestodb-pipeline 
   base_job_name: mlops-prestodb
   tags:
   - Key: team
@@ -39,13 +38,35 @@ training_step:
   instance_type: ml.m5.xlarge
   instance_count: 1
   base_job_name: rf-sklearn
+  train_split: 0.7
+  test_split: 0.9
   tags:
   - Key: team
     Value: my-team
-
-preprocessing_split_metrics:
-  train_metric: 0.7
-  test_metric: 0.9
+  query: |
+    SELECT
+        o.orderkey,
+        COUNT(l.linenumber) AS lineitem_count,
+        SUM(l.quantity) AS total_quantity,
+        AVG(l.discount) AS avg_discount,
+        SUM(l.extendedprice) AS total_extended_price,
+        o.orderdate,
+        o.orderpriority,
+        CASE
+            WHEN SUM(l.extendedprice) > 20000 THEN 1
+            ELSE 0
+        END AS high_value_order
+    FROM
+        orders o
+    JOIN
+        lineitem l ON o.orderkey = l.orderkey
+    GROUP BY
+        o.orderkey,
+        o.orderdate,
+        o.orderpriority
+    ORDER BY 
+        RANDOM() 
+    LIMIT 5000
 
 tuning_step:
   step_name: Train-And-Tune-Model
@@ -85,6 +106,31 @@ transform_step:
   tags:
   - Key: team
     Value: my-team
+  query: |
+    SELECT
+        o.orderkey,
+        COUNT(l.linenumber) AS lineitem_count,
+        SUM(l.quantity) AS total_quantity,
+        AVG(l.discount) AS avg_discount,
+        SUM(l.extendedprice) AS total_extended_price,
+        o.orderdate,
+        o.orderpriority,
+        CASE
+            WHEN SUM(l.extendedprice) > 20000 THEN 1
+            ELSE 0
+        END AS high_value_order
+    FROM
+        orders o
+    JOIN
+        lineitem l ON o.orderkey = l.orderkey
+    GROUP BY
+        o.orderkey,
+        o.orderdate,
+        o.orderpriority
+    ORDER BY 
+        RANDOM() 
+    LIMIT 5000
+
 
 data_processing_step:
   step_name: "Preprocess-Data"
@@ -125,6 +171,7 @@ realtime_endpoint:
 ## section that enables container to run notebooks and python scripts automatically 
 scripts:
     source_dir: code ## represents the source directory containing all of the data preprocessing scripts
+    query: query.py
     preprocess_data: presto_preprocess_for_training.py ## represents the pre processing script 
     evaluation: code/evaluate.py ## represents the evaluation script for the evaluate step
     batch_transform_get_data: presto_preprocess_for_batch_inference.py ## data prep for batch transform

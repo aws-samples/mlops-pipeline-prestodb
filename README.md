@@ -139,10 +139,10 @@ Setup a secret in Secrets Manager for the PrestoDB username and password. Call t
 1. Edit the [`config`](./config.yml) as per PrestoDB connection, IAM role and other pipeline details such as instance types for various pipeline steps etc.
 
     - [**Mandatory**] Edit the parameter values in the `presto` section.
-    - [**Mandatory**]Edit the parameter values in the `aws` section.
+    - [**Mandatory**] Edit the parameter values in the `aws` section.
+    - [**Mandatory**] Edit the `query` parameter value in the `training_step` section. This is the query for retrieving the training data from the PrestoDB.
+    - [**Mandatory**] Edit the `query` parameter value in the `transform_step` section. This is the query for retrieving the data for the batch transform from the PrestoDB.
     - [Optional] Edit the parameter values in the rest of the sections as appropriate.
-
-1. Edit the [query.py](./code/query.py) file to replace the `TRAINING_DATA_QUERY` and `BATCH_INFERENCE_QUERY` values to your specific PrestoDB query. The queries in this repo are examples that use one of the built-in datasets available in PrestoDB.
 
 1. Run the [`0_model_training_pipeline`](./0_model_training_pipeline.ipynb) notebook to train and tune the ML model and register it with the SageMaker model registry. All the steps in this notebook are executed as part of a training pipeline.
     - This notebook also contains an automatic model approval step that changes the state of the model registered with the model registry from `PendingForApproval` to `Approved` state. This step can be removed for prod accounts where manual or some criteria based approval would be required.

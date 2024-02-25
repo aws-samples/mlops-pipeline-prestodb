@@ -17,6 +17,7 @@ def _connect_presto_server(args, username, password, catalog, schema):
     """
     Connect to the Presto server.
     """
+    logger.info(f"args={args}, username={username}, password={'is set' if password else 'not set'}, catalog={catalog}, schema={schema}")
     
     if password: 
         ## connect to presto using password authentication
@@ -53,6 +54,7 @@ def fetch_data_from_presto(args, username, password, catalog, schema, query):
     columns = [desc[0] for desc in cur.description]
 
     df = pd.DataFrame(rows, columns=columns)
+    logger.info(f"returning dataframe of shape={df.shape} read from PrestoDB")
     cur.close()
     conn.close()
     logger.info("Data fetched successfully.")
