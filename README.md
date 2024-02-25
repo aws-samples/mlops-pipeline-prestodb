@@ -147,7 +147,7 @@ Setup a secret in Secrets Manager for the PrestoDB username and password. Call t
 1. Run the [`0_model_training_pipeline`](./0_model_training_pipeline.ipynb) notebook to train and tune the ML model and register it with the SageMaker model registry. All the steps in this notebook are executed as part of a training pipeline.
     - This notebook also contains an automatic model approval step that changes the state of the model registered with the model registry from `PendingForApproval` to `Approved` state. This step can be removed for prod accounts where manual or some criteria based approval would be required.
 
-1. Run the [`1_batch_transform_pipeline.ipynb`](./1_batch_transform_pipeline.ipynb) notebook to launch the batch inference pipeline that reads data from PrestoDB and runs batch inference on it using the most recent `Approved` ML model.
+1. Run the [`1_batch_transform_pipeline`](./1_batch_transform_pipeline.ipynb) notebook to launch the batch inference pipeline that reads data from PrestoDB and runs batch inference on it using the most recent `Approved` ML model.
 
 1. Run the [`2_realtime_inference`](./2_realtime_inference.ipynb) notebook to deploy the model as a SageMaker endpoint for real-time inference.
 
