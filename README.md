@@ -12,7 +12,7 @@ The following prerequisites need to be in place before running this code.
 
 #### PrestoDB
 
-We will use the built-in datasets available in PrestoDB for this repo. Following the instructions below to setup PrestoDB on an Amazon EC2 instance in your account. If you already have access to a PrestoDB instance then keep its connection details handy (see the `presto` section in the [`config`](./config.yml) file).
+We will use the built-in datasets available in PrestoDB for this repo. Following the instructions below to setup PrestoDB on an Amazon EC2 instance in your account. ***If you already have access to a PrestoDB instance then you can skip this section but keep its connection details handy (see the `presto` section in the [`config`](./config.yml) file)***.
 
 1. Create a security group to limit access to Presto. Create a security group called **MyPrestoSG** with two inbound rules to only allow access to Presto.
     - Create the first rule to allow inbound traffic on port 8080 to Anywhere-IPv4
@@ -137,6 +137,12 @@ Setup a secret in Secrets Manager for the PrestoDB username and password. Call t
 1. Clone the [code repo](https://github.com/aws-samples/mlops-pipeline-prestodb.git) on SageMaker Studio.
 
 1. Edit the [`config`](./config.yml) as per PrestoDB connection, IAM role and other pipeline details such as instance types for various pipeline steps etc.
+
+    - [**Mandatory**] Edit the parameter values in the `presto` section.
+    - [**Mandatory**]Edit the parameter values in the `aws` section.
+    - [Optional] Edit the parameter values in the rest of the sections as appropriate.
+
+1. Edit the [query.py](./code/query.py) file to replace the `TRAINING_DATA_QUERY` and `BATCH_INFERENCE_QUERY` values to your specific PrestoDB query. The queries in this repo are examples that use one of the built-in datasets available in PrestoDB.
 
 1. Run the [`0_model_training_pipeline`](./0_model_training_pipeline.ipynb) notebook to train and tune the ML model and register it with the SageMaker model registry. All the steps in this notebook are executed as part of a training pipeline.
     - This notebook also contains an automatic model approval step that changes the state of the model registered with the model registry from `PendingForApproval` to `Approved` state. This step can be removed for prod accounts where manual or some criteria based approval would be required.
