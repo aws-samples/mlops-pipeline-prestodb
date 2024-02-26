@@ -2,7 +2,7 @@
 aws:
   region: us-east-1
   # execution role, replace the role name below with the one you are using
-  sagemaker_execution_role_name: your-role-name
+  sagemaker_execution_role_name: your-sagemaker-execution-role
   # the execution role ARN is determined automatically by the code
   sagemaker_execution_role_arn: arn:aws:iam::{account_id}:role/{role}
   s3_bucket: sagemaker-{region}-{account_id} # region and account id are automatically replaced
