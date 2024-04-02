@@ -283,7 +283,8 @@ presto:
 -   We will also define the network configurations where your machine
     learning model will reside in the [`config`](./config.yml). In the
     `aws` section, specify the
-    `[enable_network_isolation](https://docs.aws.amazon.com/sagemaker/latest/dg/mkt-algo-model-internet-free.html), security_group_ids, and subnets`:
+    [enable_network_isolation](https://docs.aws.amazon.com/sagemaker/latest/dg/mkt-algo-model-internet-free.html),
+    `security_group_ids`, and `subnets`:
 
 ``` yaml
 network_config:
