@@ -1,4 +1,5 @@
-# How Twilio used Amazon SageMaker MLOps Pipelines with PrestoDB to enable frequent model re-training and optimized batch transform
+# How Twilio used Amazon SageMaker MLOps Pipelines with PrestoDB to
+enable frequent model re-training and optimized batch transform
 
 
 *Amit Arora*, *Madhur Prashant*, *Antara Raisa*, *Johnny Chivers*
@@ -8,24 +9,19 @@
 Machine learning (ML) models do not operate in isolation. To deliver
 value, they must integrate into existing production systems and
 infrastructure, which necessitates considering the entire ML lifecycle
-during design and development. Building a robust MLOps pipeline demands
-cross-functional collaboration. With the right processes and tools,
-MLOps enables organizations to reliably and efficiently adopt ML across
-their teams for their specific use cases. [Amazon SageMaker
+during design and development. With the right processes and tools, MLOps
+enables organizations to reliably and efficiently adopt ML across their
+teams for their specific use cases. [Amazon SageMaker
 MLOps](https://aws.amazon.com/sagemaker/mlops/?sagemaker-data-wrangler-whats-new.sort-by=item.additionalFields.postDateTime&sagemaker-data-wrangler-whats-new.sort-order=desc)
 is a suite of features that includes [Amazon SageMaker
-Projects](https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-projects.html)
-(CI/CD), [Amazon SageMaker
 Pipelines](https://aws.amazon.com/sagemaker/pipelines/) and [Amazon
 SageMaker Model
 Registry](https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry.html).
-In this blog post, we will discuss SageMaker Pipelines and Model
-Registry.
 
 **SageMaker Pipelines** allows for straightforward creation and
 management of ML workflows, while also offering storage and reuse
 capabilities for workflow steps. The **SageMaker Model Registry**
-centralizes model tracking, simplifying model deployment This blog post
+centralizes model tracking, simplifying model deployment. This blog post
 focuses on enabling AWS customers to have flexibility for using their
 data source of choice, and integrate it seamlessly with [Amazon
 SageMaker Processing
@@ -55,7 +51,7 @@ following:
     pipeline](https://docs.aws.amazon.com/sagemaker/latest/dg/batch-transform.html)
     for inference on your data fetched from PrestoDB
 
--   Deploy the trained model as a [real-time SageMaker
+-   Deploy the trained model as a [Real-Time SageMaker
     Endpoint](https://docs.aws.amazon.com/sagemaker/latest/dg/realtime-endpoints.html)
 
 ## Use case overview
@@ -81,10 +77,9 @@ The training data they used for this pipeline is made available via
 PrestoDB and is read into Pandas through the [PrestoDB Python
 client](https://pypi.org/project/presto-python-client/).
 
-The end goal was to convert all the existing steps into a three-fold
+The end goal was to convert all the existing steps into a three-part
 solution by utilizing SageMaker Pipelines to enable more frequent model
-re-training, optimized batch processing, while customers take advantage
-of flexibility of data access via an open-source SQL query engine:
+re-training and optimized batch transform:
 
 1.  Implement a training pipeline
 2.  Implement a batch transform pipeline (by connecting a SageMaker
@@ -483,22 +478,12 @@ implementation. Follow the step-by-step walkthrough below:
         that a user creates to evaluate the trained model based on a
         metric of choice.
 
-        -   Once this step is complete, a `Evaluation Report` is
-            generated that is sent to the S3 bucket for analysis:
-
-        ``` python
-
-        evaluation_report = PropertyFile(
-            name="EvaluationReport", output_name="evaluation", path=config['evaluation_step']['evaluation_filename']
-        )
-        ```
-
         -   The evaluation step uses the [evaluation
             script](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/code/evaluate.py)
             as a code entry in the step below. This script prepares the
-            features and target values and calculates the prediction
-            probabilities using `model.predict`. The evaluation report
-            sent to S3 contains information on metrics like
+            features, target values and calculates the prediction
+            probabilities using `model.predict`. An `evaluation report`
+            is sent to S3 that contains information on metrics like
             `precision, recall, accuracy`.
 
         ``` python
@@ -550,17 +535,6 @@ implementation. Follow the step-by-step walkthrough below:
         meets a specific accuracy condition:
 
     ``` python
-    # Create accuracy condition to ensure the model meets performance requirements.
-    # Models with a test accuracy lower than the condition will not be registered with the Model Registry.
-    cond_gte = ConditionGreaterThanOrEqualTo(
-        left=JsonGet(
-            step_name=step_evaluate_model.name,
-            property_file=evaluation_report,
-            json_path="binary_classification_metrics.accuracy.value",
-        ),
-        right=accuracy_condition_threshold,
-    )
-
     # Create a SageMaker Pipelines ConditionStep, using the condition above.
     # Enter the steps to perform if the condition returns True / False.
     step_cond = ConditionStep(
@@ -604,8 +578,6 @@ implementation. Follow the step-by-step walkthrough below:
                         ModelGroup=config['register_model_step']['model_group'],
                     ),
                 )
-        # wait for the execution process to complete
-        execution.wait()
         ```
 
     ***Now that the model is registered, you can get access to the
@@ -659,22 +631,6 @@ implementation. Follow the step-by-step walkthrough below:
         by the user in the `transform_step` section.
 
     ``` python
-    # Use the sklearn_processor's run method and configure the batch preprocessing step
-    step_args = sklearn_processor.run(
-        # here, we add in a `code` or an entry point that uses the data preprocess script for collecting data in a batch and storing it in S3
-        code=config['scripts']['batch_transform_get_data'],
-        source_dir=config['scripts']['source_dir'], 
-        outputs=batch_output,
-        arguments=[
-            "--host", host_parameter,
-            "--port", port_parameter,
-            "--presto_credentials_key", presto_parameter,
-            "--region", region_parameter,
-            "--presto_catalog", presto_catalog_parameter,
-            "--presto_schema", presto_schema_parameter,
-        ],
-    )
-
     # declare the batch step that is called later in pipeline execution
     batch_data_prep = ProcessingStep(
         name=config['data_processing_step']['step_name'],
@@ -735,24 +691,6 @@ implementation. Follow the step-by-step walkthrough below:
     ``` python
     step_transform = TransformStep(
         name=config['transform_step']['step_name'], transformer=transformer, inputs=transform_input, 
-    )
-
-    batch_transform_pipeline = Pipeline(
-    name=pipeline_name,
-    parameters=[processing_instance_type,
-    host_parameter,
-    presto_parameter,
-    region_parameter,
-    port_parameter,
-    target_parameter, 
-    feature_parameter,
-    presto_catalog_parameter,
-    presto_schema_parameter,],
-    steps=[
-        batch_data_prep,
-        step_create_model, 
-        step_transform,
-    ],
     )
     ```
 
@@ -816,7 +754,7 @@ implementation. Follow the step-by-step walkthrough below:
         describe_endpoint_response = sm.describe_endpoint(EndpointName=endpoint_name)
     ```
 
-    Now run inference against the data extracted from prestoDB:
+    **Now run inference against the data extracted from prestoDB**:
 
     ``` python
     body_str = "total_extended_price,avg_discount,total_quantity\n1,2,3\n66.77,12,2"
