@@ -133,7 +133,7 @@ This solution includes the following steps:
 The solution design consists of the following parts: Setting up the data
 preparation and training pipeline, preparing for the batch transform
 pipeline, and deploying the approved model of choice as a real time
-SageMaker endpoint for inference. All configuration parameters used by
+SageMaker Endpoint for inference. All configuration parameters used by
 this solution exist in this single
 [config.yml](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/config.yml)
 file. This file includes the necessary AWS and PrestoDB credentials to
