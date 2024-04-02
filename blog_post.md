@@ -1,5 +1,4 @@
-# How Twilio used Amazon SageMaker MLOps Pipelines with PrestoDB to
-enable frequent model re-training and optimized batch transform
+# How Twilio used Amazon SageMaker MLOps Pipelines with PrestoDB to enable frequent model re-training and optimized batch transform
 
 
 *Amit Arora*, *Madhur Prashant*, *Antara Raisa*, *Johnny Chivers*
