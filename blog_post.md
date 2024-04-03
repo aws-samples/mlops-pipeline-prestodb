@@ -76,15 +76,11 @@ The training data they used for this pipeline is made available via
 PrestoDB and is read into Pandas through the [PrestoDB Python
 client](https://pypi.org/project/presto-python-client/).
 
-The end goal was to convert all the existing steps into a three-part
-solution by utilizing SageMaker Pipelines to enable more frequent model
-re-training and optimized batch transform:
-
-1.  Implement a training pipeline
-2.  Implement a batch transform pipeline (by connecting a SageMaker
-    Processing Job with data queried from PrestoDB).
-3.  Finally, we also demonstrate deploying the trained model on a
-    SageMaker Endpoint for real-time inference.
+The end goal was to convert all the existing steps into an
+implementation of a training pipeline, a batch transform pipeline (by
+connecting a SageMaker Processing Job with data queried from PrestoDB),
+and deploying the trained model on a SageMaker Endpoint for real-time
+inference.
 
 Twilio was able to use this open-source solution to migrate their burner
 model and machine learning operations to Amazon SageMaker. In this blog,
@@ -100,9 +96,7 @@ repo.
 
 The solution presented provides an implementation for training a machine
 learning model and running batch transform on SageMaker using the data
-fetched from a PrestoDB Instance. This solution provides a design
-pattern built on AWS best practices that can be replicated for other ML
-workloads with minimal overhead. This is divided into three main steps:
+fetched from a PrestoDB Instance. This is divided into three main steps:
 training pipeline, batch transform pipeline, and deploying the trained
 model as a real time SageMaker Endpoint for inference.
 
