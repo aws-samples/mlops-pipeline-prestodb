@@ -23,6 +23,8 @@ _Amit Arora_, _Madhur Prashant_, _Antara Raisa_, _Johnny Chivers_
 
 ***This post is co-written with customer_names from Twilio.***
 
+[PLACEHOLDER (Twilio to add information here): Twilio is an American cloud communications company based in San Francisco, California, which provides programmable communication tools for making and receiving phone calls, sending and receiving text messages, and performing other communication functions using its web service APIs.] Being one of the largest AWS customers, Twilio engages with Data and AI/ML services to run their daily workloads. This blog revolves around the steps AWS and Twilio took to migrate Twilio's existing MLOps, implementation of training models and running batch inferences to Amazon SageMaker.
+
 Machine learning (ML) models do not operate in isolation. To deliver value, they must integrate into existing production systems and infrastructure, which necessitates considering the entire ML lifecycle during design and development. With the right processes and tools, MLOps enables organizations to reliably and efficiently adopt ML across their teams for their specific use cases.  [Amazon SageMaker MLOps](https://aws.amazon.com/sagemaker/mlops/?sagemaker-data-wrangler-whats-new.sort-by=item.additionalFields.postDateTime&sagemaker-data-wrangler-whats-new.sort-order=desc) is a suite of features that includes [Amazon SageMaker Pipelines](https://aws.amazon.com/sagemaker/pipelines/) and [Amazon SageMaker Model Registry](https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry.html).
 
 **SageMaker Pipelines** allows for straightforward creation and management of ML workflows, while also offering storage and reuse capabilities for workflow steps. The **SageMaker Model Registry** centralizes model tracking, simplifying model deployment. This blog post focuses on enabling AWS customers to have flexibility for using their data source of choice, and integrate it seamlessly with [Amazon SageMaker Processing Jobs](https://sagemaker-examples.readthedocs.io/en/latest/sagemaker_processing/scikit_learn_data_processing_and_model_evaluation/scikit_learn_data_processing_and_model_evaluation.html), where you can leverage a simplified, managed experience to run data pre- or post-processing and model evaluation workloads on the Amazon SageMaker platform. 
@@ -39,9 +41,7 @@ In this post, we show you a step-by-step implementation to achieve the following
 
 - Deploy the trained model as a [Real-Time SageMaker Endpoint](https://docs.aws.amazon.com/sagemaker/latest/dg/realtime-endpoints.html)
 
-## Use case overview
-
-[PLACEHOLDER (Twilio to add information here): Twilio is an American cloud communications company based in San Francisco, California, which provides programmable communication tools for making and receiving phone calls, sending and receiving text messages, and performing other communication functions using its web service APIs.] Being one of the largest AWS customers, Twilio engages with Data and AI/ML services to run their daily workloads. This blog revolves around the steps AWS and Twilio took to migrate Twilio's existing MLOps, implementation of training models and running batch inferences to Amazon SageMaker. 
+## Use case overview 
 
 Burners are phone numbers which are available online to everyone and are used to hide identities by creating fake accounts on customers' apps/websites. Twilio built a data and machine learning operations pipeline to detect these anomalous phone numbers with the help of a binary classification model using the [scikit-learn](https://scikit-learn.org/stable/) [`RandomForestClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html). The training data they used for this pipeline is made available via PrestoDB and is read into Pandas through the [PrestoDB Python client](https://pypi.org/project/presto-python-client/).
 

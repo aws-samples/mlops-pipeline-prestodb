@@ -5,6 +5,16 @@
 
 ***This post is co-written with customer_names from Twilio.***
 
+\[PLACEHOLDER (Twilio to add information here): Twilio is an American
+cloud communications company based in San Francisco, California, which
+provides programmable communication tools for making and receiving phone
+calls, sending and receiving text messages, and performing other
+communication functions using its web service APIs.\] Being one of the
+largest AWS customers, Twilio engages with Data and AI/ML services to
+run their daily workloads. This blog revolves around the steps AWS and
+Twilio took to migrate Twilio’s existing MLOps, implementation of
+training models and running batch inferences to Amazon SageMaker.
+
 Machine learning (ML) models do not operate in isolation. To deliver
 value, they must integrate into existing production systems and
 infrastructure, which necessitates considering the entire ML lifecycle
@@ -54,16 +64,6 @@ following:
     Endpoint](https://docs.aws.amazon.com/sagemaker/latest/dg/realtime-endpoints.html)
 
 ## Use case overview
-
-\[PLACEHOLDER (Twilio to add information here): Twilio is an American
-cloud communications company based in San Francisco, California, which
-provides programmable communication tools for making and receiving phone
-calls, sending and receiving text messages, and performing other
-communication functions using its web service APIs.\] Being one of the
-largest AWS customers, Twilio engages with Data and AI/ML services to
-run their daily workloads. This blog revolves around the steps AWS and
-Twilio took to migrate Twilio’s existing MLOps, implementation of
-training models and running batch inferences to Amazon SageMaker.
 
 Burners are phone numbers which are available online to everyone and are
 used to hide identities by creating fake accounts on customers’
