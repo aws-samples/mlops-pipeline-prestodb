@@ -256,7 +256,7 @@ code.
 
 #### PrestoDB
 
--   We will use the built-in datasets available in PrestoDB via the
+-   We use the built-in datasets available in PrestoDB via the
     `TPCH-connector` for this solution. Follow the instructions in the
     GitHub
     [README.md](https://github.com/aws-samples/mlops-pipeline-prestodb?tab=readme-ov-file#prestodb)
@@ -278,9 +278,9 @@ presto:
 
 #### [Amazon VPC](https://aws.amazon.com/vpc/) Network Configurations
 
--   We will also define the network configurations where your machine
-    learning model will reside in the [`config`](./config.yml). In the
-    `aws` section, specify the
+-   We also define the network configurations for your machine learning
+    model and operations in the [`config`](./config.yml). In the `aws`
+    section, specify the
     [enable_network_isolation](https://docs.aws.amazon.com/sagemaker/latest/dg/mkt-algo-model-internet-free.html),
     `security_group_ids`, and `subnets`:
 
