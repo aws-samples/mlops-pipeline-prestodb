@@ -134,16 +134,20 @@ solution exist in this single
 file. This file includes the necessary AWS and PrestoDB credentials to
 connect to the PrestoDB instance, refers to the training
 [hyperparameters](https://sagemaker.readthedocs.io/en/stable/api/utility/hyperparameters.html)
-to be used and the queries being run at training and inference steps are
-parameterized in this file too. This design makes this file highly
-customizable for the user to use for their specific use case and run the
-solution end to end with minimal-no code changes.
+that are used and
+[SQL](https://aws.amazon.com/what-is/sql/#:~:text=Structured%20query%20language%20(SQL)%20is,relationships%20between%20the%20data%20values.)
+queries being run at training and inference steps. This design makes
+this solution highly customizable for the users for their specific use
+cases so they can run the solution end to end with minimal-no code
+changes.
 
 An example of how a query is configured within this file is given below.
 This query is used at the data preprocessing step, to fetch data from
-the PrestoDB instance. Customers and users can change the query for
-their use case simply within the config file and run the solution as is
-without making any code changes.
+the PrestoDB instance on a multi classifier problem. Here, we predict
+whether an `order` is a `high_value_order` or a `low_value_order` based
+on assumed calculations on `TPCH-data`. Customers and users can change
+the query for their use case simply within the config file and run the
+solution as is without making any code changes.
 
 ``` sql
     SELECT
