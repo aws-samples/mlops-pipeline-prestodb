@@ -112,7 +112,7 @@ This solution includes the following steps:
 -   [Batch Transform
     Pipeline](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/1_batch_transform_pipeline.ipynb):
     In this step, we create a batch transform pipeline. Here, we launch
-    the batch transform pipeline that reads data from the PrestoDB
+    the batch preprocess data step that reads data from the PrestoDB
     instance and runs batch inference on the registered ML model that we
     [`Approve`](https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-approve.html)
     as a part of this pipeline. This model is approved either
@@ -280,10 +280,10 @@ presto:
 
 -   We also define the network configurations of your machine learning
     model and operations in the [`config`](./config.yml) file. In the
-    `aws` section, specify the
-    [enable_network_isolation](https://docs.aws.amazon.com/sagemaker/latest/dg/mkt-algo-model-internet-free.html)
-    status, `security_group_ids`, and `subnets` based on your network
-    isolation preferences:
+    `aws` section, specify the `enable_network_isolation` status,
+    `security_group_ids`, and `subnets` based on your network isolation
+    preferences. View more information on network configurations
+    [here](https://docs.aws.amazon.com/sagemaker/latest/dg/mkt-algo-model-internet-free.html):
 
 ``` yaml
 network_config:
@@ -349,7 +349,9 @@ Once the prerequisites, set up is complete and the config.yml file is
 set up correctly, we are now ready to run the
 [`mlops-pipeline-prestodb`]((https://github.com/aws-samples/mlops-pipeline-prestodb/tree/main))
 implementation. Follow the step-by-step walkthrough below as represented
-in the architecture diagram:
+in the architecture diagram. This diagram shows the three portions of
+this solution: the training pipeline, batch transform pipeline and
+deploying the model as a SageMaker Endpoint:
 
 ![](images/Architecture_mlops.png)
 
