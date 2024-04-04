@@ -278,11 +278,12 @@ presto:
 
 #### [Amazon VPC](https://aws.amazon.com/vpc/) Network Configurations
 
--   We also define the network configurations for your machine learning
-    model and operations in the [`config`](./config.yml). In the `aws`
-    section, specify the
-    [enable_network_isolation](https://docs.aws.amazon.com/sagemaker/latest/dg/mkt-algo-model-internet-free.html),
-    `security_group_ids`, and `subnets`:
+-   We also define the network configurations of your machine learning
+    model and operations in the [`config`](./config.yml) file. In the
+    `aws` section, specify the
+    [enable_network_isolation](https://docs.aws.amazon.com/sagemaker/latest/dg/mkt-algo-model-internet-free.html)
+    status, `security_group_ids`, and `subnets` based on your network
+    isolation preferences:
 
 ``` yaml
 network_config:
@@ -360,7 +361,7 @@ in the architecture diagram:
     data processing, model training, tuning and evaluation step to train
     a binary classification machine learning model using scikit-learn.
     The trained model can then be used for batch inference, or hosted on
-    a SageMaker endpoint for real-time inference. At the end of this
+    a SageMaker Endpoint for real-time inference. At the end of this
     run, navigate to `pipelines` on the Studio Navigation pane:
 
     **After executing the entire training pipeline, your pipeline
@@ -377,16 +378,16 @@ in the architecture diagram:
         our pipeline input parameters when triggering our pipeline
         execution. We use a [preprocess
         script](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/code/presto_preprocess_for_training.py)
-        which is read to connect to the PrestoDB instance, and query
-        data (using the user specified query in the [config
+        which is used to connect and query data from the PrestoDB
+        instance (using the user specified query in the [config
         file](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/config.yml)).
-        This splits and sends the data as `tain`, `test`, and
+        This step then splits and sends the data as `tain`, `test`, and
         `validation` files to an S3 bucket. Using the data in these
         files, we can train our machine learning model.
 
         -   We use the
             [sklearn_processor](https://docs.aws.amazon.com/sagemaker/latest/dg/use-scikit-learn-processing-container.html)
-            in a SageMaker Pipelines
+            in our
             [`ProcessingStep`](https://docs.aws.amazon.com/sagemaker/latest/dg/build-and-manage-steps.html#step-type-processing)
             and define it as given below:
 
@@ -417,18 +418,17 @@ in the architecture diagram:
 
         -   Here, we use the `config['scripts']['source_dir']` which
             points to our data preprocessing script that connects to the
-            PrestoDB instance. For this blog, we are using the sample
-            query as an example to extract open-source `TPCH data` on
-            orders, discounts and order priorities in the `query`
-            parameter within the
-            [config.yml](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/config.yml)
-            file.
+            PrestoDB instance. Parameters being used as arguments in the
+            [`step_args`](https://docs.aws.amazon.com/sagemaker/latest/dg/build-and-manage-steps.html#:~:text=%2C%0A%20%20%20%20sagemaker_session%3Dpipeline_session%2C%0A)-,step_args,-%3D%20pyspark_processor.run(%0A%20%20%20%20inputs)
+            including the `Presto host`, `port`, AWS account information
+            and credentials are configurable via the config file.
 
     -   **Train Model Step**: In this step of the pipeline, we use the
         [Scikit Learn
         Estimator](https://sagemaker.readthedocs.io/en/stable/frameworks/sklearn/sagemaker.sklearn.html)
         from the SageMaker SDK and the `RandomForestClassifier` from
-        scikit-learn to train the ML model. The
+        scikit-learn to train the ML model for our binary classification
+        use case. The
         [HyperparameterTuner](https://sagemaker.readthedocs.io/en/stable/api/training/tuner.html)
         class is used for running automatic model tuning to determine
         the set of hyperparameters that provide the best performance
