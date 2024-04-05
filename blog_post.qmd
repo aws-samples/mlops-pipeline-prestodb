@@ -427,6 +427,9 @@ Once the prerequisites, set up is complete and the config.yml file is set up cor
         describe_endpoint_response = sm.describe_endpoint(EndpointName=endpoint_name)
     ```
 
+    Upon deployment, you can view the endpoint in service on the SageMaker Endpoints under the Inference option on the left panel as follows:
+    ![SageMaker Endpoint deployed for Real Time Inference](images/ep_in_service.png){#fig-open-jl}
+    
     **Now run inference against the data extracted from prestoDB**:
 
     ``` {.python}

@@ -767,6 +767,11 @@ deploying the model as a SageMaker Endpoint:
         describe_endpoint_response = sm.describe_endpoint(EndpointName=endpoint_name)
     ```
 
+    Upon deployment, you can view the endpoint in service on the
+    SageMaker Endpoints under the Inference option on the left panel as
+    follows: <img src="images/ep_in_service.png" id="fig-open-jl"
+    alt="SageMaker Endpoint deployed for Real Time Inference" />
+
     **Now run inference against the data extracted from prestoDB**:
 
     ``` python
