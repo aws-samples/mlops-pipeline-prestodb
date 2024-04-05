@@ -23,17 +23,16 @@ enables organizations to reliably and efficiently adopt ML across their
 teams for their specific use cases. [Amazon SageMaker
 MLOps](https://aws.amazon.com/sagemaker/mlops/?sagemaker-data-wrangler-whats-new.sort-by=item.additionalFields.postDateTime&sagemaker-data-wrangler-whats-new.sort-order=desc)
 is a suite of features that includes [Amazon SageMaker
-Pipelines](https://aws.amazon.com/sagemaker/pipelines/) and [Amazon
+Pipelines](https://aws.amazon.com/sagemaker/pipelines/), that allows for
+straightforward creation and management of ML workflows, while also
+offering storage and reuse capabilities for workflow steps and [Amazon
 SageMaker Model
-Registry](https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry.html).
+Registry](https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry.html)
+that centralizes model tracking, simplifying model deployment.
 
-**SageMaker Pipelines** allows for straightforward creation and
-management of ML workflows, while also offering storage and reuse
-capabilities for workflow steps. The **SageMaker Model Registry**
-centralizes model tracking, simplifying model deployment. This blog post
-focuses on enabling AWS customers to have flexibility for using their
-data source of choice, and integrate it seamlessly with [Amazon
-SageMaker Processing
+This blog post focuses on enabling AWS customers to have flexibility for
+using their data source of choice, and integrate it seamlessly with
+[Amazon SageMaker Processing
 Jobs](https://sagemaker-examples.readthedocs.io/en/latest/sagemaker_processing/scikit_learn_data_processing_and_model_evaluation/scikit_learn_data_processing_and_model_evaluation.html),
 where you can leverage a simplified, managed experience to run data pre-
 or post-processing and model evaluation workloads on the Amazon
@@ -48,8 +47,8 @@ against data of any size from multiple sources.
 In this post, we show you a step-by-step implementation to achieve the
 following:
 
--   How you can read data available in PrestoDB via SageMaker Processing
-    Jobs
+-   How you can read data available in PrestoDB via a SageMaker
+    Processing Job
 
 -   Train a binary classification model using [SageMaker Training
     Jobs](https://sagemaker.readthedocs.io/en/v1.44.4/amazon_sagemaker_operators_for_kubernetes_jobs.html)
@@ -58,7 +57,7 @@ following:
 
 -   Run a [Batch Transform
     pipeline](https://docs.aws.amazon.com/sagemaker/latest/dg/batch-transform.html)
-    for inference on your data fetched from PrestoDB
+    for inference on data fetched from PrestoDB
 
 -   Deploy the trained model as a [Real-Time SageMaker
     Endpoint](https://docs.aws.amazon.com/sagemaker/latest/dg/realtime-endpoints.html)
@@ -94,13 +93,11 @@ repo.
 
 ## Solution overview
 
-The solution presented provides an implementation for training a machine
-learning model and running batch transform on SageMaker using the data
-fetched from a PrestoDB Instance. This is divided into three main steps:
-training pipeline, batch transform pipeline, and deploying the trained
-model as a real time SageMaker Endpoint for inference.
+This solution is divided into three main steps: training pipeline, batch
+transform pipeline, and deploying the trained model as a real time
+SageMaker Endpoint for inference.
 
-This solution includes the following steps:
+This solution includes the following notebooks as steps:
 
 -   [Model Training
     Pipeline](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/0_model_training_pipeline.ipynb):
@@ -111,7 +108,7 @@ This solution includes the following steps:
     training pipeline.
 -   [Batch Transform
     Pipeline](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/1_batch_transform_pipeline.ipynb):
-    In this step, we create a batch transform pipeline. Here, we launch
+    In this step, we create a batch transform pipeline. Here, we execute
     the batch preprocess data step that reads data from the PrestoDB
     instance and runs batch inference on the registered ML model that we
     [`Approve`](https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-approve.html)
@@ -132,22 +129,21 @@ Endpoint for inference. All configuration parameters used by this
 solution exist in this single
 [config.yml](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/config.yml)
 file. This file includes the necessary AWS and PrestoDB credentials to
-connect to the PrestoDB instance, refers to the training
+connect to the PrestoDB instance, information on the training
 [hyperparameters](https://sagemaker.readthedocs.io/en/stable/api/utility/hyperparameters.html)
 that are used and
 [SQL](https://aws.amazon.com/what-is/sql/#:~:text=Structured%20query%20language%20(SQL)%20is,relationships%20between%20the%20data%20values.)
-queries being run at training and inference steps. This design makes
-this solution highly customizable for the users for their specific use
-cases so they can run the solution end to end with minimal-no code
-changes.
+queries that are run at training and inference steps. This design makes
+this solution highly customizable for industry and user specific use
+cases so that it can be end to end with minimal-no code changes.
 
 An example of how a query is configured within this file is given below.
 This query is used at the data preprocessing step, to fetch data from
 the PrestoDB instance on a multi classifier problem. Here, we predict
 whether an `order` is a `high_value_order` or a `low_value_order` based
-on assumed calculations on `TPCH-data`. Customers and users can change
-the query for their use case simply within the config file and run the
-solution as is without making any code changes.
+on assumed calculations on the `TPCH-data`. Customers and users can
+change the query for their use case simply within the config file and
+run the solution as is without making any code changes.
 
 ``` sql
     SELECT
@@ -156,10 +152,11 @@ solution as is without making any code changes.
         SUM(l.quantity) AS total_quantity,
         AVG(l.discount) AS avg_discount,
         SUM(l.extendedprice) AS total_extended_price,
+        SUM(l.tax) AS total_payable_tax,
         o.orderdate,
         o.orderpriority,
         CASE
-            WHEN SUM(l.extendedprice) > 20000 THEN 1
+            WHEN (o.orderpriority = '2-HIGH') THEN 1
             ELSE 0
         END AS high_value_order
     FROM
@@ -530,6 +527,14 @@ deploying the model as a SageMaker Endpoint:
         )
         ```
 
+        -   From the `TPCH data` queried, we are evaluating the
+            `accuracy`, `precision` and `recall`. Once this step is
+            complete, we can view the associated metrics in the
+            `evaluation report` that is sent to the S3 bucket calculated
+            in the logs as follows:
+
+            ![](images/evaluation_report_example.png)
+
     -   **Condition model step**: Once the model is evaluated, we can
         add conditions to the pipeline with a
         [ConditionStep](https://sagemaker.readthedocs.io/en/stable/workflows/pipelines/sagemaker.workflow.pipelines.html)
@@ -549,8 +554,12 @@ deploying the model as a SageMaker Endpoint:
     )
     ```
 
-    If the accuracy condition is not met, a `step_fail` step is executed
-    that sends an error message to the user and the pipeline fails.
+    If the `accuracy condition` is not met, a `step_fail` step is
+    executed that sends an error message to the user and the pipeline
+    fails. For instance, since the `accuracy condition` is set to `0.7`
+    in the `config file` and our Accuracy calculates exceeds it
+    (`73.8% > 70%`), the `outcome` of this step is set to `True` and
+    moved to the last step of the training pipeline.
 
     -   **Register model step**: Once the trained model meets the model
         performance requirements, a new version of the model is
