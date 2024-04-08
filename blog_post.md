@@ -474,8 +474,8 @@ deploying the model as a SageMaker Endpoint:
         register the model with the Model Registry (from where it can be
         subsequently [approved and
         deployed](https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-approve.html)).
-        If the model accuracy does not meet the (given
-        threshold)\[https://sagemaker-examples.readthedocs.io/en/latest/sagemaker-pipelines/tabular/abalone_build_train_deploy/sagemaker-pipelines-preprocess-train-evaluate-batch-transform.html#Define-a-Model-Evaluation-Step-to-Evaluate-the-Trained-Model\]
+        If the model accuracy does not meet the[given
+        threshold](https://sagemaker-examples.readthedocs.io/en/latest/sagemaker-pipelines/tabular/abalone_build_train_deploy/sagemaker-pipelines-preprocess-train-evaluate-batch-transform.html#Define-a-Model-Evaluation-Step-to-Evaluate-the-Trained-Model)
         then the pipeline fails and the model is not registered with the
         Model Registry. We use the
         [`ScriptProcessor`](https://docs.aws.amazon.com/sagemaker/latest/dg/processing-container-run-scripts.html)
