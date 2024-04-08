@@ -420,7 +420,7 @@ deploying the model as a SageMaker Endpoint:
         -   Here, we use the `config['scripts']['source_dir']` which
             points to our data preprocessing script that connects to the
             PrestoDB instance. Parameters being used as arguments in the
-            [`step_args`](https://docs.aws.amazon.com/sagemaker/latest/dg/build-and-manage-steps.html#:~:text=%2C%0A%20%20%20%20sagemaker_session%3Dpipeline_session%2C%0A)-,step_args,-%3D%20pyspark_processor.run(%0A%20%20%20%20inputs)
+            [`step_args`](https://docs.aws.amazon.com/sagemaker/latest/dg/build-and-manage-steps.html#:~:text=%2C%0A%20%20%20%20sagemaker_session%3Dpipeline_session%2C%0A-,step_args,-%3D%20pyspark_processor.run(%0A%20%20%20%20inputs))
             including the `Presto host`, `port`, AWS account information
             and credentials are configurable via the config file.
 
@@ -697,34 +697,36 @@ deploying the model as a SageMaker Endpoint:
         Inference
         Pipelines](https://docs.aws.amazon.com/sagemaker/latest/dg/inference-pipeline-batch.html).
 
-A transform step requires a transformer and the data on which to run
-batch transformation.
+        -   A transform step requires a transformer and the data on
+            which to run batch transformation.
 
-    ``` {.python}
-    transformer = Transformer(
-    model_name=step_create_model.properties.ModelName,
-    instance_type=config['transform_step']['instance_type'],
-    instance_count=config['transform_step']['instance_count'],
-    strategy="MultiRecord",
-    accept="text/csv",
-    assemble_with="Line",
-    output_path=f"s3://{bucket}",
-    tags = config['transform_step']['tags'], 
-    env={
-        'START_TIME_UTC': st.strftime('%Y-%m-%d %H:%M:%S'), 
-        'END_TIME_UTC': et.strftime('%Y-%m-%d %H:%M:%S'),
-    })
-    ```
+            ``` python
+            transformer = Transformer(
+            model_name=step_create_model.properties.ModelName,
+            instance_type=config['transform_step']['instance_type'],
+            instance_count=config['transform_step']['instance_count'],
+            strategy="MultiRecord",
+            accept="text/csv",
+            assemble_with="Line",
+            output_path=f"s3://{bucket}",
+            tags = config['transform_step']['tags'], 
+            env={
+                'START_TIME_UTC': st.strftime('%Y-%m-%d %H:%M:%S'), 
+                'END_TIME_UTC': et.strftime('%Y-%m-%d %H:%M:%S'),
+            })
+            ```
 
-    Now that our transformer object is created, we pass the transformer input (that contains the batch data from our `batch preprocess` step) into the `TransformStep` declaration:
+    Now that our transformer object is created, we pass the transformer
+    input (that contains the batch data from our `batch preprocess`
+    step) into the `TransformStep` declaration:
 
-    ``` {.python}
+    ``` python
     step_transform = TransformStep(
         name=config['transform_step']['step_name'], transformer=transformer, inputs=transform_input, 
     )
     ```
 
-1.  Lastly, Choose
+3.  Lastly, Choose
     [`2_realtime_inference.ipynb`](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/2_realtime_inference.ipynb).
     When the notebook is open, on the Run menu, choose **Run All Cells**
     to run the code in this notebook. This notebook extracts the latest

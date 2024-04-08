@@ -210,7 +210,7 @@ Once the prerequisites, set up is complete and the config.yml file is set up cor
             )
         ```
 
-        - Here, we use the `config['scripts']['source_dir']` which points to our data preprocessing script that connects to the PrestoDB instance. Parameters being used as arguments in the [`step_args`](https://docs.aws.amazon.com/sagemaker/latest/dg/build-and-manage-steps.html#:~:text=%2C%0A%20%20%20%20sagemaker_session%3Dpipeline_session%2C%0A)-,step_args,-%3D%20pyspark_processor.run(%0A%20%20%20%20inputs) including the `Presto host`, `port`, AWS account information and credentials are configurable via the config file.
+        - Here, we use the `config['scripts']['source_dir']` which points to our data preprocessing script that connects to the PrestoDB instance. Parameters being used as arguments in the [`step_args`](https://docs.aws.amazon.com/sagemaker/latest/dg/build-and-manage-steps.html#:~:text=%2C%0A%20%20%20%20sagemaker_session%3Dpipeline_session%2C%0A-,step_args,-%3D%20pyspark_processor.run(%0A%20%20%20%20inputs)) including the `Presto host`, `port`, AWS account information and credentials are configurable via the config file.
 
      - **Train Model Step**: In this step of the pipeline, we create a training job to train a model. For more information on training jobs, see [Train a Model with Amazon SageMaker](https://docs.aws.amazon.com/sagemaker/latest/dg/how-it-works-training.html). Here, we use the [Scikit Learn Estimator](https://sagemaker.readthedocs.io/en/stable/frameworks/sklearn/sagemaker.sklearn.html) from the SageMaker SDK and the `RandomForestClassifier` from scikit-learn to train the ML model for our binary classification use case. The [HyperparameterTuner](https://sagemaker.readthedocs.io/en/stable/api/training/tuner.html) class is used for running automatic model tuning to determine the set of hyperparameters that provide the best performance based on a given metric threshold (for example, maximizing the AUC metric).
 
@@ -365,23 +365,23 @@ Once the prerequisites, set up is complete and the config.yml file is set up cor
 
     - **Create a batch transform step to perform inference on the data with results stored in S3**: Now that a model instance is created (view above), we create a [Transformer](https://sagemaker.readthedocs.io/en/stable/api/inference/transformer.html) instance with the appropriate model type, compute instance type, and desired output S3 URI. Specifically, pass in the `ModelName` from the [`CreateModelStep`](https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateModel.html), `step_create_model` properties. The `CreateModelStep` properties attribute matches the object model of the `DescribeModel` response object. A `transform step` for batch transformation is used to run inference on an entire dataset. For more information about batch transformation, see [Run Batch Transforms with Inference Pipelines](https://docs.aws.amazon.com/sagemaker/latest/dg/inference-pipeline-batch.html).
 
-A transform step requires a transformer and the data on which to run batch transformation.
+        - A transform step requires a transformer and the data on which to run batch transformation.
 
-    ``` {.python}
-    transformer = Transformer(
-    model_name=step_create_model.properties.ModelName,
-    instance_type=config['transform_step']['instance_type'],
-    instance_count=config['transform_step']['instance_count'],
-    strategy="MultiRecord",
-    accept="text/csv",
-    assemble_with="Line",
-    output_path=f"s3://{bucket}",
-    tags = config['transform_step']['tags'], 
-    env={
-        'START_TIME_UTC': st.strftime('%Y-%m-%d %H:%M:%S'), 
-        'END_TIME_UTC': et.strftime('%Y-%m-%d %H:%M:%S'),
-    })
-    ```
+            ``` {.python}
+            transformer = Transformer(
+            model_name=step_create_model.properties.ModelName,
+            instance_type=config['transform_step']['instance_type'],
+            instance_count=config['transform_step']['instance_count'],
+            strategy="MultiRecord",
+            accept="text/csv",
+            assemble_with="Line",
+            output_path=f"s3://{bucket}",
+            tags = config['transform_step']['tags'], 
+            env={
+                'START_TIME_UTC': st.strftime('%Y-%m-%d %H:%M:%S'), 
+                'END_TIME_UTC': et.strftime('%Y-%m-%d %H:%M:%S'),
+            })
+            ```
 
     Now that our transformer object is created, we pass the transformer input (that contains the batch data from our `batch preprocess` step) into the `TransformStep` declaration:
 
