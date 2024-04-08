@@ -141,7 +141,7 @@ An example of how a query is configured within this file is given below.
 This query is used at the data preprocessing step, to fetch data from
 the PrestoDB instance on a multi classifier problem. Here, we predict
 whether an `order` is a `high_value_order` or a `low_value_order` based
-on assumed calculations on the `TPCH-data`. Customers and users can
+on the `orderpriority` from the `TPCH-data`. Customers and users can
 change the query for their use case simply within the config file and
 run the solution as is without making any code changes.
 
@@ -156,7 +156,7 @@ run the solution as is without making any code changes.
         o.orderdate,
         o.orderpriority,
         CASE
-            WHEN (o.orderpriority = '2-HIGH') THEN 1
+            WHEN (o.orderpriority = '2-HIGH') THEN 1 
             ELSE 0
         END AS high_value_order
     FROM
@@ -373,9 +373,11 @@ deploying the model as a SageMaker Endpoint:
     ***View the step-by-step description of the training pipeline showed
     above as follows***:
 
-    -   **Preprocess data step**: In this step of the notebook, we set
-        our pipeline input parameters when triggering our pipeline
-        execution. We use a [preprocess
+    -   **Preprocess data step**: In this step of the notebook, we
+        create a processing job for data processing. For more
+        information on processing jobs, see [Process Data and Evaluate
+        Models](https://docs.aws.amazon.com/sagemaker/latest/dg/processing-job.html).
+        We use a [preprocess
         script](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/code/presto_preprocess_for_training.py)
         which is used to connect and query data from the PrestoDB
         instance (using the user specified query in the [config
@@ -422,8 +424,11 @@ deploying the model as a SageMaker Endpoint:
             including the `Presto host`, `port`, AWS account information
             and credentials are configurable via the config file.
 
-    -   **Train Model Step**: In this step of the pipeline, we use the
-        [Scikit Learn
+    -   **Train Model Step**: In this step of the pipeline, we create a
+        training job to train a model. For more information on training
+        jobs, see [Train a Model with Amazon
+        SageMaker](https://docs.aws.amazon.com/sagemaker/latest/dg/how-it-works-training.html).
+        Here, we use the [Scikit Learn
         Estimator](https://sagemaker.readthedocs.io/en/stable/frameworks/sklearn/sagemaker.sklearn.html)
         from the SageMaker SDK and the `RandomForestClassifier` from
         scikit-learn to train the ML model for our binary classification
@@ -463,7 +468,7 @@ deploying the model as a SageMaker Endpoint:
         )
         ```
 
-    -   **Evaluate model step**: The purpose of this next step in the
+    -   **Evaluate model step**: The purpose of this step in the
         pipeline is to check if the trained and tuned model has an
         accuracy level above a configurable threshold and only then
         register the model with the Model Registry (from where it can be
@@ -565,7 +570,14 @@ deploying the model as a SageMaker Endpoint:
         performance requirements, a new version of the model is
         registered with the [Model
         Registry](https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry.html)
-        for further analysis and model creation.
+        for further analysis and model creation. This `RegisterModel`
+        step is to register a
+        [sagemaker.model.Model](https://sagemaker.readthedocs.io/en/stable/api/inference/model.html)
+        or a
+        [sagemaker.pipeline.PipelineModel](https://sagemaker.readthedocs.io/en/stable/api/inference/pipeline.html#pipelinemodel)
+        with the Amazon SageMaker model registry. A PipelineModel
+        represents an inference pipeline, which is a model composed of a
+        linear sequence of containers that process inference requests.
 
     ***The model is registered with the Model Registry with approval
     status set to `PendingManualApproval`, this means the model cannot
@@ -679,9 +691,16 @@ deploying the model as a SageMaker Endpoint:
         [`CreateModelStep`](https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateModel.html),
         `step_create_model` properties. The `CreateModelStep` properties
         attribute matches the object model of the `DescribeModel`
-        response object.
+        response object. A `transform step` for batch transformation is
+        used to run inference on an entire dataset. For more information
+        about batch transformation, see [Run Batch Transforms with
+        Inference
+        Pipelines](https://docs.aws.amazon.com/sagemaker/latest/dg/inference-pipeline-batch.html).
 
-    ``` python
+A transform step requires a transformer and the data on which to run
+batch transformation.
+
+    ``` {.python}
     transformer = Transformer(
     model_name=step_create_model.properties.ModelName,
     instance_type=config['transform_step']['instance_type'],
@@ -697,17 +716,15 @@ deploying the model as a SageMaker Endpoint:
     })
     ```
 
-    Now that our transformer object is created, we pass the transformer
-    input (that contains the batch data from our `batch preprocess`
-    step) into the `TransformStep` declaration:
+    Now that our transformer object is created, we pass the transformer input (that contains the batch data from our `batch preprocess` step) into the `TransformStep` declaration:
 
-    ``` python
+    ``` {.python}
     step_transform = TransformStep(
         name=config['transform_step']['step_name'], transformer=transformer, inputs=transform_input, 
     )
     ```
 
-3.  Lastly, Choose
+1.  Lastly, Choose
     [`2_realtime_inference.ipynb`](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/2_realtime_inference.ipynb).
     When the notebook is open, on the Run menu, choose **Run All Cells**
     to run the code in this notebook. This notebook extracts the latest
