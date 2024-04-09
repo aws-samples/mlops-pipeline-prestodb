@@ -3503,7 +3503,6 @@ Figure 5: SageMaker Model Registry: Manual Model Approval via SageMaker Studio
 <span id="cb16-10"><a href="#cb16-10"></a>response_str</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 </ol></li>
 </ol>
-<p>We have now seen an end-to-end process of our solution, from fetching data by connecting to a PrestoDB instance, followed by training, evaluating, registering the model. We then approved the latest registered model from our training pipeline solution and ran batch inference against batch data stored in S3. Furthermore, we deployed the latest approved model as a real time SageMaker endpoint to run inferences. The results are given below in the <code>Results</code> section.</p>
 </section>
 </section>
 <section id="results" class="level2">
@@ -3531,6 +3530,7 @@ Figure 5: SageMaker Model Registry: Manual Model Approval via SageMaker Studio
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>We have now seen an end-to-end process of our solution. We fetched data by connecting a SageMaker Processing Job to a PrestoDB instance, followed by training, evaluating, registering the model. We then approved the latest registered model from our training pipeline solution and ran batch inference against the batch data (queried from PrestoDB) stored in S3. Furthermore, we deployed the latest approved model as a real time SageMaker endpoint to run inferences.</p>
 <p>With the rise of generative AI, the use of training, deploying and running machine learning models exponentially increases, and so does the use of data. With an integration of SageMaker Processing Jobs with PrestoDB, customers can easily and seamlessly migrate their workloads to SageMaker pipelines without any burden of additional data preparation, storage, and access. Customers can now build, train, evaluate, run batch inferences and deploy their models as real time endpoints while taking advantage of their existing data engineering pipelines with minimal-no code changes.</p>
 <p>We encourage you to learn more by exploring SageMaker Pipeline, open-source data querying engines like PrestoDB and building a solution using the sample implementation provided in this post.</p>
 <p>Portions of this code are released under the Apache 2.0 License as referenced here: https://aws.amazon.com/apache-2-0/</p>
