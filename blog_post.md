@@ -861,12 +861,6 @@ results here, querying data, fetching it, making predictions etc\]
 
 mlops-pipeline-prestodb results
 
-## Cleanup
-
-–\> need to perform and add a cleanup section \[we can add the CFT clean
-up section here for the ec2 instance with the PrestoDB instance running
-on it\]
-
 ## Conclusion
 
 With the rise of generative AI, the use of training, deploying and
