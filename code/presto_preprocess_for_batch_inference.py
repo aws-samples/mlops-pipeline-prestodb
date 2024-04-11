@@ -4,6 +4,7 @@ import boto3
 import logging
 import argparse
 import pandas as pd
+from datetime import timedelta
 from query import BATCH_INFERENCE_QUERY
 from presto_utils import fetch_data_from_presto
 
@@ -20,22 +21,34 @@ if __name__ == "__main__":
     parser.add_argument('--presto_credentials_key', type=str, required=True)
     parser.add_argument('--presto_catalog', type=str, required=True)
     parser.add_argument('--presto_schema', type=str, required=True)
-    parser.add_argument('--query', type=str, help='The PrestoDB query to run')
+    parser.add_argument('--start_time', type=str, required=True)
+    parser.add_argument('--end_time', type=str, required=True)
     
-
-    ## add start time and end time as str -- todo
-    # parser.add_argument('--dataframe-path', type=str, required=True, help='The local path to the CSV file to upload')
-
     args = parser.parse_args()
     logger.info(f"args={args}")
+    
+    start, end = args.start_time, args.end_time
+
+    if end is None:
+        end = ""
+    else:
+        end = f"AND created_at <= date_parse('{end}', '%Y-%m-%d %H:%i:%s')"
+
+    s_date = (pd.Timestamp(start) - timedelta(days=1)).date().isoformat()
+    e_date = (pd.Timestamp(start) + timedelta(days=1)).date().isoformat()
+    
+    query = BATCH_INFERENCE_QUERY.format(s_date=s_date, e_date=e_date, start=start, end=end)
+
     client = boto3.client('secretsmanager', region_name=args.region)
     response = client.get_secret_value(SecretId=args.presto_credentials_key)
     secrets_credentials = json.loads(response['SecretString'])
     password = secrets_credentials.get('password')
     username = secrets_credentials.get('username', 'ec2-user')
+    
+    BATCH_INFERENCE_QUERY = f"{BATCH_INFERENCE_QUERY}".format
 
     # Fetch data from Presto and store it in a DataFrame
-    df = fetch_data_from_presto(args, username, password, args.presto_catalog, args.presto_schema, BATCH_INFERENCE_QUERY)
+    df = fetch_data_from_presto(args, username, password, args.presto_catalog, args.presto_schema, query)
     logger.info(f"read data of shape={df.shape} for batch inference")
 
     # save dataframe locally so that the processing job can upload it to S3

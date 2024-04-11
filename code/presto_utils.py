@@ -42,11 +42,10 @@ def _connect_presto_server(args, username, password, catalog, schema):
     logger.info("Connected successfully to Presto server.")
     return conn
 
-def fetch_data_from_presto(args, username, password, catalog, schema, query):
-    """
-    Fetch data from Presto and return it as a pandas DataFrame.
-    """
-    conn = _connect_presto_server(args, username, password, catalog, schema)  # Example catalog and schema
+
+def _run_query(args, username, password, catalog, schema, query):
+    
+    conn = _connect_presto_server(args, username, password, catalog, schema)
     cur = conn.cursor()
 
     cur.execute(query)
@@ -58,4 +57,20 @@ def fetch_data_from_presto(args, username, password, catalog, schema, query):
     cur.close()
     conn.close()
     logger.info("Data fetched successfully.")
+    
+    return df
+
+
+def fetch_data_from_presto(args, username, password, catalog, schema, query):
+    """
+    Fetch data from Presto and return it as a pandas DataFrame.
+    """
+    try:
+        df = _run_query(args, username, password, catalog, schema, query)
+    except:
+        try:
+            df = _run_query(args, username, password, catalog, schema, query)
+        except Exception as e:
+            print(e)
+            raise ValueError("PRESTO FETCH ERROR")
     return df

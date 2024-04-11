@@ -50,7 +50,7 @@ def predict_fn(input_data, model):
     logger.info(f"Prediction start time: {start_time}")
         
     # Ensure we use the features as specified in the model's config
-    features_df = input_data[model.features]
+    features_df = input_data#[model.features] # TODO: FIX when adding record identifier
     predictions = model.predict(features_df)
     features_df['prediction'] = predictions.tolist()
     
