@@ -6,7 +6,7 @@
 ***This post is co-written with customer_names from Twilio.***
 
 \[PLACEHOLDER (Twilio to add information here):
-[Twilio]((https://pages.twilio.com/twilio-brand-sales-namer-1?utm_source=google&utm_medium=cpc&utm_term=twilio&utm_campaign=G_S_NAMER_Brand_Twilio_Tier1&cq_plac=&cq_net=g&cq_pos=&cq_med=&cq_plt=gp&gad_source=1&gclid=CjwKCAjwtqmwBhBVEiwAL-WAYd5PgxP-XSLDYBvu6y_j8KUydoj33QX3XWpUo4zEm2DLzgn_bfdogBoC9dIQAvD_BwE))
+[Twilio](https://pages.twilio.com/twilio-brand-sales-namer-1?utm_source=google&utm_medium=cpc&utm_term=twilio&utm_campaign=G_S_NAMER_Brand_Twilio_Tier1&cq_plac=&cq_net=g&cq_pos=&cq_med=&cq_plt=gp&gad_source=1&gclid=CjwKCAjwtqmwBhBVEiwAL-WAYd5PgxP-XSLDYBvu6y_j8KUydoj33QX3XWpUo4zEm2DLzgn_bfdogBoC9dIQAvD_BwE)
 is an American cloud communications company based in San Francisco,
 California, that provides programmable communication tools for making
 and receiving phone calls, sending and receiving text messages, and
@@ -362,9 +362,9 @@ deploying the model as a SageMaker real-time endpoint:
     step, approving the latest model from the model registry, creating
     the model instance, and performing batch transformation on data that
     is stored and retrieved from an S3 bucket.
--   The PrestoDB server is hosted on an Amazon EC2 instance, with
-    credentials stored in [AWS Secrets
-    Manager](https://aws.amazon.com/secrets-manager/).
+    -   The PrestoDB server is hosted on an Amazon EC2 instance, with
+        credentials stored in [AWS Secrets
+        Manager](https://aws.amazon.com/secrets-manager/).
 -   **Solution Part 3**: Finally, the latest approved model from the
     SageMaker Model Registry is deployed as a SageMaker Real-Time
     Endpoint for inference.
@@ -590,11 +590,12 @@ deploying the model as a SageMaker real-time endpoint:
         meets the model performance requirements, a new version of the
         model is registered with the `SageMaker Model Registry`.
 
-        ***The model is registered with the model registry with an
+        ***The model is registered with the `model registry` with an
         approval status set to `PendingManualApproval`. This means the
         model cannot be deployed on a SageMaker endpoint unless its
         status in the registry is changed to `Approved` manually via the
-        SageMaker console, programmatically or through a Lambda
+        SageMaker console, programmatically or through an
+        [`AWS Lambda`](https://aws.amazon.com/pm/lambda/?gclid=CjwKCAjwoa2xBhACEiwA1sb1BOKhFzqMbSWe815ewC8bKXkO4w55mmsJibArB3J7kMDiMASvd-mwABoCcJgQAvD_BwE&trk=73f686c8-9606-40ad-852f-7b2bcafa68fe&sc_channel=ps&ef_id=CjwKCAjwoa2xBhACEiwA1sb1BOKhFzqMbSWe815ewC8bKXkO4w55mmsJibArB3J7kMDiMASvd-mwABoCcJgQAvD_BwE:G:s&s_kwcid=AL!4422!3!651212652666!e!!g!!amazon%20lambda!909122559!45462427876)
         function.***
 
         ***Now that the model is registered, you can get access to the
@@ -644,7 +645,7 @@ deploying the model as a SageMaker real-time endpoint:
         script](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/code/presto_preprocess_for_batch_inference.py)
         that queries data from PrestoDB and saves it in a batch
         directory within an S3 bucket. The query that is used to fetch
-        batch data is configured by the user within the config file in
+        batch data is configured by the user within the `config file` in
         the `transform_step` section.
 
         ``` python
