@@ -5,16 +5,17 @@
 
 ***This post is co-written with customer_names from Twilio.***
 
-\[PLACEHOLDER (Twilio to add information here): Twilio is an American
-cloud communications company based in San Francisco, California, that
-provides programmable communication tools for making and receiving phone
-calls, sending and receiving text messages, and performing other
-communication functions using its web service APIs.\] Being one of the
-largest AWS customers, Twilio engages with Data and AI/ML services to
-run their daily workloads. This blog outlines the steps AWS and Twilio
-took to migrate Twilio’s existing Machine Learning Operations (MLOps),
-the implementation of training models, and running batch inferences to
-Amazon SageMaker.
+\[PLACEHOLDER (Twilio to add information here):
+[Twilio]((https://pages.twilio.com/twilio-brand-sales-namer-1?utm_source=google&utm_medium=cpc&utm_term=twilio&utm_campaign=G_S_NAMER_Brand_Twilio_Tier1&cq_plac=&cq_net=g&cq_pos=&cq_med=&cq_plt=gp&gad_source=1&gclid=CjwKCAjwtqmwBhBVEiwAL-WAYd5PgxP-XSLDYBvu6y_j8KUydoj33QX3XWpUo4zEm2DLzgn_bfdogBoC9dIQAvD_BwE))
+is an American cloud communications company based in San Francisco,
+California, that provides programmable communication tools for making
+and receiving phone calls, sending and receiving text messages, and
+performing other communication functions using its web service APIs.\]
+Being one of the largest AWS customers, Twilio engages with Data and
+AI/ML services to run their daily workloads. This blog outlines the
+steps AWS and Twilio took to migrate Twilio’s existing Machine Learning
+Operations (MLOps), the implementation of training models, and running
+batch inferences to Amazon SageMaker.
 
 Machine learning (ML) models do not operate in isolation. They must
 integrate into existing production systems and infrastructure to deliver
@@ -39,8 +40,7 @@ Using SageMaker Processing Jobs, you can leverage a simplified, managed
 experience to run data pre- or post-processing and model evaluation
 workloads on the Amazon SageMaker platform.
 
-[Twilio](https://pages.twilio.com/twilio-brand-sales-namer-1?utm_source=google&utm_medium=cpc&utm_term=twilio&utm_campaign=G_S_NAMER_Brand_Twilio_Tier1&cq_plac=&cq_net=g&cq_pos=&cq_med=&cq_plt=gp&gad_source=1&gclid=CjwKCAjwtqmwBhBVEiwAL-WAYd5PgxP-XSLDYBvu6y_j8KUydoj33QX3XWpUo4zEm2DLzgn_bfdogBoC9dIQAvD_BwE)
-needed to implement an MLOps pipeline that queried data from
+Twilio needed to implement an MLOps pipeline that queried data from
 [PrestoDB](https://prestodb.io/). PrestoDB is an open-source SQL query
 engine that is designed for fast analytic queries against data of any
 size from multiple sources.
@@ -77,8 +77,8 @@ client](https://pypi.org/project/presto-python-client/).
 
 The end goal was to convert the existing steps into two pipelines: a
 training pipeline and a batch transform pipeline that connected the data
-queried from PrestoDB to a SageMaker Processing Job, and deploy the
-trained model to a SageMaker Endpoint for real-time inference.
+queried from PrestoDB to a SageMaker Processing Job, and finally deploy
+the trained model to a SageMaker Endpoint for real-time inference.
 
 In this blog, we use an open-source dataset available via the
 [TPCH-Connector](https://prestodb.io/docs/current/connector/tpch.html)
@@ -128,13 +128,10 @@ used in this solution exist in a single
 [config.yml](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/config.yml)
 file. This file includes the necessary AWS and PrestoDB credentials to
 connect to the PrestoDB instance, information on the training
-[hyperparameters](https://sagemaker.readthedocs.io/en/stable/api/utility/hyperparameters.html)
-and
-[SQL](https://aws.amazon.com/what-is/sql/#:~:text=Structured%20query%20language%20(SQL)%20is,relationships%20between%20the%20data%20values.)
-queries that are executed at training, and inference steps to read data
-from PrestoDB. This solution is highly customizable for
-industry-specific use cases so that it can be used with minimal code
-changes via simple updates in the config file.
+hyperparameters and SQL queries that are executed at training, and
+inference steps to read data from PrestoDB. This solution is highly
+customizable for industry-specific use cases so that it can be used with
+minimal code changes via simple updates in the `config file`.
 
 An example of how a query is configured within the `config.yml` file is
 shown below. This query is used at the [data processing
@@ -142,11 +139,11 @@ step](https://docs.aws.amazon.com/sagemaker/latest/dg/build-and-manage-steps.htm
 of the training pipeline to fetch data from the PrestoDB instance. Here,
 we predict whether an `order` is a `high_value_order` or a
 `low_value_order` based on the `orderpriority` as given from the
-`TPCH-data`. More information on the `TPCH-data`, database entities,
+`TPCH-data`. More information on the `TPCH-data`, its database entities,
 relationships, and characteristics can be found
 [here](https://www.tpc.org/tpc_documents_current_versions/pdf/tpc-h_v2.17.1.pdf).
 Users can change the query for their use case within the config file and
-run the solution with no code changes.
+execute the solution with no code changes.
 
 ``` sql
     SELECT
@@ -182,8 +179,8 @@ The main steps of this solution are described in detail below:
 1.  The training data is read from a PrestoDB instance, and any feature
     engineering needed is done as part of the SQL queries run in
     PrestoDB at retrieval time. The queries that are used to fetch data
-    at training and batch inference steps are configured in the [config
-    file](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/config.yml).
+    at training and batch inference steps are configured in the
+    `config file`.
 2.  We use the
     [FrameworkProcessor](https://docs.aws.amazon.com/sagemaker/latest/dg/processing-job-frameworks.html)
     with SageMaker Processing Jobs to read data from PrestoDB using the
@@ -211,9 +208,11 @@ The main steps of this solution are described in detail below:
 ### Part 2: [Batch Transform Step](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/1_batch_transform_pipeline.ipynb):
 
 1.  The batch transform pipeline implements a data preparation step that
-    retrieves data from a PrestoDB instance (using a [data preprocess
+    retrieves data from a PrestoDB instance (using a [data preprocessing
     script](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/code/presto_preprocess_for_batch_inference.py))
-    and stores the batch data in S3.
+    and stores the batch data in [Amazon Simple Storage
+    Service](https://aws.amazon.com/pm/serv-s3/?gclid=Cj0KCQjw2a6wBhCVARIsABPeH1sVCmK3CK8Vsv31A4fjV79s5YkxGqKoyDuv2rPuoBDfDqwh7ZiYaTQaAkeOEALw_wcB&trk=fecf68c9-3874-4ae2-a7ed-72b6d19c8034&sc_channel=ps&ef_id=Cj0KCQjw2a6wBhCVARIsABPeH1sVCmK3CK8Vsv31A4fjV79s5YkxGqKoyDuv2rPuoBDfDqwh7ZiYaTQaAkeOEALw_wcB:G:s&s_kwcid=AL!4422!3!536452728638!e!!g!!amazon%20s3!11204620052!112938567994)
+    (S3).
 2.  The latest model registered in the Model Registry from the training
     pipeline is approved.
 3.  A
@@ -258,10 +257,10 @@ code:
     to set up PrestoDB on an Amazon EC2 instance in your account. ***If
     you already have access to a PrestoDB instance, then you can skip
     this section but keep its connection details handy (see the `presto`
-    section in the [`config`](./config.yml) file)***. Once you have your
-    PrestoDB credentials, fill out the `presto` section in the
-    [`config`](./config.yml) as given below. Enter your host
-    `public IP`, `port`, `credentials`, `catalog` and `schema`:
+    section in the `config` file)***. Once you have your PrestoDB
+    credentials, fill out the `presto` section in the `config` as given
+    below. Enter your host `public IP`, `port`, `credentials`, `catalog`
+    and `schema`:
 
 ``` yaml
 presto:
@@ -274,9 +273,9 @@ presto:
 
 #### [Amazon VPC](https://aws.amazon.com/vpc/) Network Configurations
 
--   We also define the network configurations of the machine learning
-    model and operations in the [`config`](./config.yml) file. In the
-    `aws` section, specify the `enable_network_isolation` status,
+-   We also define the encryption, network isolation, and VPC
+    configurations of the ML model and operations in the `config` file.
+    In the `aws` section, specify the `enable_network_isolation` status,
     `security_group_ids`, and `subnets` based on your network isolation
     preferences. View more information on network configurations and
     preferences
@@ -299,9 +298,7 @@ Set up an execution role in [AWS Identity and Access Management
 (IAM)](https://aws.amazon.com/iam/) with appropriate permissions to
 allow SageMaker to access [AWS Secrets
 Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html),
-[Amazon
-S3](https://aws.amazon.com/pm/serv-s3/?gclid=Cj0KCQjw2a6wBhCVARIsABPeH1sVCmK3CK8Vsv31A4fjV79s5YkxGqKoyDuv2rPuoBDfDqwh7ZiYaTQaAkeOEALw_wcB&trk=fecf68c9-3874-4ae2-a7ed-72b6d19c8034&sc_channel=ps&ef_id=Cj0KCQjw2a6wBhCVARIsABPeH1sVCmK3CK8Vsv31A4fjV79s5YkxGqKoyDuv2rPuoBDfDqwh7ZiYaTQaAkeOEALw_wcB:G:s&s_kwcid=AL!4422!3!536452728638!e!!g!!amazon%20s3!11204620052!112938567994),
-and other services within your AWS account. ***Until an AWS
+S3, and other services within your AWS account. ***Until an AWS
 CloudFormation template is provided that creates the role with the
 requisite IAM permissions, use a SageMaker execution role that
 AmazonSageMakerFullAccess AWS managed policy for your execution role.***
@@ -314,8 +311,8 @@ to create permissions for your `iam` roles.
 Setup a secret in Secrets Manager for the PrestoDB username and
 password. Call the secret `prestodb-credentials` and add a `username`
 field to it and a `password` field to it. For instructions on creating
-and managing secrets via `Secrets Manager`, view
-[this](https://docs.aws.amazon.com/secretsmanager/latest/userguide/managing-secrets.html).
+and managing secrets via `Secrets Manager`, view [this
+link](https://docs.aws.amazon.com/secretsmanager/latest/userguide/managing-secrets.html).
 
 ### Steps to run
 
@@ -326,7 +323,7 @@ and managing secrets via `Secrets Manager`, view
     to view instructions on cloning a git repository in SageMaker
     Studio.
 
-2.  Edit the [`config.yml`](./config.yml) file as follows:
+2.  Edit the `config.yml` file as follows:
 
     -   Edit the parameter values in the `presto` section. These
         parameters define the connectivity to PrestoDB.
@@ -353,28 +350,30 @@ deploying the model as a SageMaker real-time endpoint:
 
 ![](images/Architecture_mlops.png)
 
--   The first block on the left shows the architectural representation
-    of the training pipeline. This includes the data preprocessing step,
-    the training and tuning step, the model evaluation step, the
-    condition step, and lastly, the register model step. The train,
-    test, validation datasets, and [evaluation
+-   **Solution Part 1**: Shows the architectural representation of the
+    training pipeline. This includes the data preprocessing step, the
+    training and tuning step, the model evaluation step, the condition
+    step, and lastly, the register model step. The train, test,
+    validation datasets, and [evaluation
     report](https://sagemaker-examples.readthedocs.io/en/latest/sagemaker-pipelines/tabular/abalone_build_train_deploy/sagemaker-pipelines-preprocess-train-evaluate-batch-transform.html)
     that are generated in this pipeline are sent to an S3 bucket.
--   The second block on the right shows the architectural representation
-    of the batch transform pipeline. This includes the batch data
-    preprocessing step, approving the latest model from the model
-    registry, creating the model instance, and performing batch
-    transformation on data that is stored and retrieved from an S3
-    bucket.
+-   **Solution Part 2**: Shows the architectural representation of the
+    batch transform pipeline. This includes the batch data preprocessing
+    step, approving the latest model from the model registry, creating
+    the model instance, and performing batch transformation on data that
+    is stored and retrieved from an S3 bucket.
 -   The PrestoDB server is hosted on an Amazon EC2 instance, with
     credentials stored in [AWS Secrets
     Manager](https://aws.amazon.com/secrets-manager/).
--   Finally, the latest approved model from the SageMaker Model Registry
-    is deployed as a SageMaker Real-Time Endpoint for inference.
+-   **Solution Part 3**: Finally, the latest approved model from the
+    SageMaker Model Registry is deployed as a SageMaker Real-Time
+    Endpoint for inference.
 
 ### Solution Walkthrough
 
-1.  On the left panel in [SageMaker
+------------------------------------------------------------------------
+
+1.  **Training Pipeline**: On the left panel in [SageMaker
     Studio](https://aws.amazon.com/sagemaker/studio/), choose
     **0_model_training_pipeline.inpynb** in the navigation pane. When
     the notebook is open, on the Run menu, choose **Run All Cells** to
@@ -382,9 +381,8 @@ deploying the model as a SageMaker real-time endpoint:
     SageMaker Pipelines can be used to string together a sequence of
     data processing, model training, tuning, and evaluation steps to
     train a binary classification machine learning model using
-    scikit-learn. At the end of this run, navigate to
-    [`pipelines`](https://docs.aws.amazon.com/sagemaker/latest/dg/pipelines-studio.html)
-    on the Studio Navigation pane:
+    scikit-learn. At the end of this run, navigate to `pipelines` on the
+    Studio Navigation pane:
 
     **After executing the entire training pipeline, your pipeline
     structure on [Amazon SageMaker
@@ -402,11 +400,10 @@ deploying the model as a SageMaker real-time endpoint:
         We use a [preprocess
         script](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/code/presto_preprocess_for_training.py)
         that is used to connect and query data from a PrestoDB instance
-        using the user-specified `SQL query` in the [config
-        file](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/config.yml).
-        This step splits and sends data retrieved from PrestoDB as
-        `tain`, `test`, and `validation` files to an S3 bucket. The ML
-        model is trained using the data in these files.
+        using the user-specified `SQL query` in the config file. This
+        step splits and sends data retrieved from PrestoDB as `tain`,
+        `test`, and `validation` files to an S3 bucket. The ML model is
+        trained using the data in these files.
 
         The
         [sklearn_processor](https://docs.aws.amazon.com/sagemaker/latest/dg/use-scikit-learn-processing-container.html)
@@ -440,11 +437,11 @@ deploying the model as a SageMaker real-time endpoint:
             )
         ```
 
-        Here, the `config['scripts']['source_dir']` is used which points
+        Here, we use the `config['scripts']['source_dir']` which points
         to the data preprocessing script that connects to the PrestoDB
         instance. Parameters used as arguments in
         [`step_args`](https://docs.aws.amazon.com/sagemaker/latest/dg/build-and-manage-steps.html#:~:text=%2C%0A%20%20%20%20sagemaker_session%3Dpipeline_session%2C%0A-,step_args,-%3D%20pyspark_processor.run(%0A%20%20%20%20inputs))
-        are configurable and fetched from the config file.
+        are configurable and fetched from the `config file`.
 
     2.  **Train Model Step**: In this step of the pipeline, we create a
         training job to train a model. For more information on training
@@ -455,17 +452,15 @@ deploying the model as a SageMaker real-time endpoint:
         from the SageMaker SDK to handle end-to-end training and
         deployment of custom Scikit-learn code. The
         `RandomForestClassifier` is used to train the ML model for our
-        binary classification use case. The
-        [HyperparameterTuner](https://sagemaker.readthedocs.io/en/stable/api/training/tuner.html)
-        class is used for running automatic model tuning to determine
-        the set of hyperparameters that provide the best performance
-        based on a user-defined metric threshold (for example,
-        maximizing the AUC metric).
+        binary classification use case. The `HyperparameterTuner` class
+        is used for running automatic model tuning to determine the set
+        of hyperparameters that provide the best performance based on a
+        user-defined metric threshold (for example, maximizing the AUC
+        metric).
 
         -   In the code below, the `sklearn_estimator` object is used
-            with parameters that are configured in the [config
-            file](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/config.yml)
-            and uses a [training
+            with parameters that are configured in the `config file` and
+            uses a [training
             script](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/code/training.py)
             to train the ML model. This step accesses the `train`,
             `test` and `validation` files that were created as a part of
@@ -505,10 +500,9 @@ deploying the model as a SageMaker real-time endpoint:
         that a user creates to evaluate the trained model based on a
         metric of choice.
 
-        -   The evaluation step uses the [evaluation
-            script](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/code/evaluate.py)
-            as a code entry. This script prepares the features, target
-            values and calculates the prediction probabilities using
+        -   The evaluation step uses the `evaluation script` as a code
+            entry. This script prepares the features, target values and
+            calculates the prediction probabilities using
             `model.predict`. At the end of the run, an
             `evaluation report` is sent to S3 that contains information
             on `precision, recall, accuracy` metrics.
@@ -594,8 +588,7 @@ deploying the model as a SageMaker real-time endpoint:
         [sagemaker.pipeline.PipelineModel](https://sagemaker.readthedocs.io/en/stable/api/inference/pipeline.html#pipelinemodel)
         with the Amazon SageMaker model registry. Once the trained model
         meets the model performance requirements, a new version of the
-        model is registered with the [Model
-        Registry](https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry.html).
+        model is registered with the `SageMaker Model Registry`.
 
         ***The model is registered with the model registry with an
         approval status set to `PendingManualApproval`. This means the
@@ -610,7 +603,7 @@ deploying the model as a SageMaker real-time endpoint:
         and run the second portion of this solution: Batch Transform
         Step***
 
-2.  Next Choose
+2.  **Batch Transform Pipeline**: Next Choose
     [`1_batch_transform_pipeline.ipynb`](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/1_batch_transform_pipeline.ipynb).
     When the notebook is open, on the Run menu, choose **Run All Cells**
     to run the code in this notebook. This notebook will run a batch
@@ -639,9 +632,8 @@ deploying the model as a SageMaker real-time endpoint:
 
         Now we have extracted the latest model from the SageMaker Model
         Registry and programmatically approved it. You can also approve
-        the model manually on the [SageMaker Model
-        Registry](https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry.html)
-        page in SageMaker Studio as shown in the image below.
+        the model manually on the `SageMaker Model Registry` page in
+        SageMaker Studio as shown in the image below.
 
         ![](images/sagemaker_model_registry.png)
 
@@ -726,7 +718,7 @@ deploying the model as a SageMaker real-time endpoint:
         )
         ```
 
-3.  Lastly, choose
+3.  **SageMaker Real-Time Inference**: Lastly, choose
     [`2_realtime_inference.ipynb`](https://github.com/aws-samples/mlops-pipeline-prestodb/blob/main/2_realtime_inference.ipynb).
     When the notebook is open, on the Run menu, choose **Run All Cells**
     to run the code in this notebook. This notebook extracts the latest
