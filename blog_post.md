@@ -67,7 +67,7 @@ following:
 Burner phones, or ***burners***, are phone numbers that are available
 online to everyone and are used to hide identities by creating fake
 accounts on customers’ apps or websites. Twilio trained a binary
-classification machine learning (ML) model
+classification ML model
 using[scikit-learn’s](https://scikit-learn.org/stable/)
 [`RandomForestClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html).
 This model is used as part of a batch process that runs periodically to
@@ -380,9 +380,9 @@ deploying the model as a SageMaker real-time endpoint:
     run the code in this notebook. This notebook demonstrates how
     SageMaker Pipelines can be used to string together a sequence of
     data processing, model training, tuning, and evaluation steps to
-    train a binary classification machine learning model using
-    scikit-learn. At the end of this run, navigate to `pipelines` on the
-    Studio Navigation pane:
+    train a binary classification ML model using scikit-learn. At the
+    end of this run, navigate to `pipelines` on the Studio Navigation
+    pane:
 
     **After executing the entire training pipeline, your pipeline
     structure on [Amazon SageMaker
@@ -840,13 +840,13 @@ latest approved model as a real-time SageMaker endpoint to run
 inferences.
 
 The rise of generative AI increases the demand for training, deploying,
-and running machine learning models, and consequently, the use of data.
-By integrating SageMaker Processing Jobs with PrestoDB, you can
-seamlessly migrate your workloads to SageMaker pipelines without
-additional data preparation, storage, or accessibility burdens. You can
-build, train, evaluate, run batch inferences, and deploy models as
-real-time endpoints while leveraging your existing data engineering
-pipelines with minimal or no code changes.
+and running ML models, and consequently, the use of data. By integrating
+SageMaker Processing Jobs with PrestoDB, you can seamlessly migrate your
+workloads to SageMaker pipelines without additional data preparation,
+storage, or accessibility burdens. You can build, train, evaluate, run
+batch inferences, and deploy models as real-time endpoints while
+leveraging your existing data engineering pipelines with minimal or no
+code changes.
 
 Explore SageMaker Pipelines, open-source data querying engines like
 PrestoDB, and build a solution using the sample implementation provided.
@@ -860,10 +860,9 @@ License](https://aws.amazon.com/apache-2-0/)
 
 <img style="float: left; margin: 0 10px 0 0;" src="images/">Amit Arora
 is an AI and ML Specialist Architect at Amazon Web Services, helping
-enterprise customers use cloud-based machine learning services to
-rapidly scale their innovations. He is also an adjunct lecturer in the
-MS data science and analytics program at Georgetown University in
-Washington D.C.
+enterprise customers use cloud-based ML services to rapidly scale their
+innovations. He is also an adjunct lecturer in the MS data science and
+analytics program at Georgetown University in Washington D.C.
 
 <br><br>
 
