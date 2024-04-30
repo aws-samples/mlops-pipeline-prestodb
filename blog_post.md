@@ -64,8 +64,8 @@ following:
 
 ## Use case overview
 
-Twilio trained a binary classification ML model
-using[scikit-learn’s](https://scikit-learn.org/stable/)
+Twilio trained a binary classification ML model using
+[scikit-learn’s](https://scikit-learn.org/stable/)
 [`RandomForestClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html)
 to integrate into their MLOps pipeline. This model is used as part of a
 batch process that runs periodically for their daily workloads, making
