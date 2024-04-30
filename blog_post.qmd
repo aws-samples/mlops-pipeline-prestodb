@@ -43,11 +43,11 @@ In this post, we show you a step-by-step implementation to achieve the following
 
 ## Use case overview 
 
-Burner phones, or ***burners***, are phone numbers that are available online to everyone and are used to hide identities by creating fake accounts on customers’ apps or websites. Twilio trained a binary classification ML model using[scikit-learn's](https://scikit-learn.org/stable/) [`RandomForestClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html). This model is used as part of a batch process that runs periodically to detect burner numbers. The training data used for this pipeline is made available via PrestoDB and read into Pandas through the [PrestoDB Python client](https://pypi.org/project/presto-python-client/).
+Twilio trained a binary classification ML model using[scikit-learn's](https://scikit-learn.org/stable/) [`RandomForestClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) to integrate into their MLOps pipeline. This model is used as part of a batch process that runs periodically for their daily workloads, making training and inference workflows repeatable to accelerate model development. The training data used for this pipeline is made available via PrestoDB and read into Pandas through the [PrestoDB Python client](https://pypi.org/project/presto-python-client/).
 
 The end goal was to convert the existing steps into two pipelines: a training pipeline and a batch transform pipeline that connected the data queried from PrestoDB to a SageMaker Processing Job, and finally deploy the trained model to a SageMaker Endpoint for real-time inference.
 
-In this blog, we use an open-source dataset available via the [TPCH-Connector](https://prestodb.io/docs/current/connector/tpch.html) that is packaged with PrestoDB to illustrate the end-to-end workflow that Twilio used. Twilio was able to use this open-source solution to migrate their burner model and existing MLOps pipeline to Amazon SageMaker. All the code for this open-source solution is available in the [GitHub](https://github.com/aws-samples/mlops-pipeline-prestodb?tab=readme-ov-file) repo.
+In this blog, we use an open-source dataset available via the [TPCH-Connector](https://prestodb.io/docs/current/connector/tpch.html) that is packaged with PrestoDB to illustrate the end-to-end workflow that Twilio used. Twilio was able to use this open-source solution to migrate their existing MLOps pipeline to Amazon SageMaker. All the code for this open-source solution is available in the [GitHub](https://github.com/aws-samples/mlops-pipeline-prestodb?tab=readme-ov-file) repo.
 
 
 ## Solution overview
