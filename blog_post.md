@@ -5,17 +5,20 @@
 
 ***This post is co-written with customer_names from Twilio.***
 
-\[PLACEHOLDER (Twilio to add information here):
-[Twilio](https://pages.twilio.com/twilio-brand-sales-namer-1?utm_source=google&utm_medium=cpc&utm_term=twilio&utm_campaign=G_S_NAMER_Brand_Twilio_Tier1&cq_plac=&cq_net=g&cq_pos=&cq_med=&cq_plt=gp&gad_source=1&gclid=CjwKCAjwtqmwBhBVEiwAL-WAYd5PgxP-XSLDYBvu6y_j8KUydoj33QX3XWpUo4zEm2DLzgn_bfdogBoC9dIQAvD_BwE)
-is an American cloud communications company based in San Francisco,
-California, that provides programmable communication tools for making
-and receiving phone calls, sending and receiving text messages, and
-performing other communication functions using its web service APIs.\]
-Being one of the largest AWS customers, Twilio engages with Data and
-AI/ML services to run their daily workloads. This blog outlines the
-steps AWS and Twilio took to migrate Twilio’s existing Machine Learning
-Operations (MLOps), the implementation of training models, and running
-batch inferences to Amazon SageMaker.
+Today’s leading companies trust [Twilio’s](https://www.twilio.com/en-us)
+Customer Engagement Platform (CEP) to build direct, personalized
+relationships with their customers everywhere in the world. Twilio
+enables companies to use communications and data to add intelligence and
+security to every step of the customer journey, from sales to marketing
+to growth, customer service and many more engagement use cases in a
+flexible, programmatic way. Across 180 countries, millions of developers
+and hundreds of thousands of businesses use Twilio to create magical
+experiences for their customers. Being one of the largest AWS customers,
+Twilio engages with Data and AI/ML services to run their daily
+workloads. This blog outlines the steps AWS and Twilio took to migrate
+Twilio’s existing Machine Learning Operations (MLOps), the
+implementation of training models, and running batch inferences to
+Amazon SageMaker.
 
 Machine learning (ML) models do not operate in isolation. They must
 integrate into existing production systems and infrastructure to deliver
