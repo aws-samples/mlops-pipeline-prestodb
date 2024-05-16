@@ -859,22 +859,32 @@ License](https://aws.amazon.com/apache-2-0/)
 
 ## Author bio
 
-<img style="float: left; margin: 0 10px 0 0;" src="images/">Amit Arora
-is an AI and ML Specialist Architect at Amazon Web Services, helping
-enterprise customers use cloud-based ML services to rapidly scale their
-innovations. He is also an adjunct lecturer in the MS data science and
-analytics program at Georgetown University in Washington D.C.
+<img style="float: left; margin: 0 10px 0 0;" src="images/ML-16123-Amit.jpg">
+Amit Arora is an AI and ML Specialist Architect at Amazon Web Services,
+helping enterprise customers use cloud-based machine learning services
+to rapidly scale their innovations. He is also an adjunct lecturer in
+the MS data science and analytics program at Georgetown University in
+Washington D.C.
 
 <br><br>
 
-<img style="float: left; margin: 0 10px 0 0;" src="images/">Madhur
-Prashant <br><br>
+<br><br>
+
+<img style="float: left; margin: 0 10px 0 0;" src="images/madhur.jpg">Madhur
+Prashant is an AI and ML Solutions Architect at Amazon Web Services. He
+is passionate about the intersection of human thinking and generative
+AI. His interests lie in generative AI, specifically building solutions
+that are helpful and harmless, and most of all optimal for customers.
+Outside of work, he loves doing yoga, hiking, spending time with his
+twin, and playing the guitar.
 
 <br><br>
 
-<img style="float: left; margin: 0 10px 0 0;" src="images/">Antara Raisa
-is an AI and ML Solutions Architect at Amazon Web Services supporting
-strategic customers based out of Dallas, Texas. She also has previous
-experience working with large enterprise partners at AWS, where she
-worked as a Partner Success Solutions Architect for digital native
+<img style="float: left; margin: 0 10px 0 0;" src="images/ML-16123-Antara.jpg">Antara
+Raisa is an AI and ML Solutions Architect at Amazon Web Services
+supporting Strategic Customers based out of Dallas, Texas. She also has
+previous experience working with large enterprise partners at AWS, where
+she worked as a Partner Success Solutions Architect for digital native
 customers.
+
+<br><br>
