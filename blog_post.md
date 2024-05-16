@@ -868,20 +868,20 @@ Washington D.C.
 
 <br><br>
 
+<img style="float: left; margin: 0 10px 0 0;" src="images/madhur.jpg">
+
+Madhur Prashant is an AI and ML Solutions Architect at Amazon Web
+Services. He is passionate about the intersection of human thinking and
+generative AI. His interests lie in generative AI, specifically building
+solutions that are helpful and harmless, and most of all optimal for
+customers. Outside of work, he loves doing yoga, hiking, spending time
+with his twin, and playing the guitar.
+
 <br><br>
 
-<img style="float: left; margin: 0 10px 0 0;" src="images/madhur.jpg">Madhur
-Prashant is an AI and ML Solutions Architect at Amazon Web Services. He
-is passionate about the intersection of human thinking and generative
-AI. His interests lie in generative AI, specifically building solutions
-that are helpful and harmless, and most of all optimal for customers.
-Outside of work, he loves doing yoga, hiking, spending time with his
-twin, and playing the guitar.
+<img style="float: left; margin: 0 10px 0 0;" src="images/ML-16123-Antara.jpg">
 
-<br><br>
-
-<img style="float: left; margin: 0 10px 0 0;" src="images/ML-16123-Antara.jpg">Antara
-Raisa is an AI and ML Solutions Architect at Amazon Web Services
+Antara Raisa is an AI and ML Solutions Architect at Amazon Web Services
 supporting Strategic Customers based out of Dallas, Texas. She also has
 previous experience working with large enterprise partners at AWS, where
 she worked as a Partner Success Solutions Architect for digital native
