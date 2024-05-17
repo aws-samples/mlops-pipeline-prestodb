@@ -884,3 +884,11 @@ supporting Strategic Customers based out of Dallas, Texas. She also has
 previous experience working with large enterprise partners at AWS, where
 she worked as a Partner Success Solutions Architect for digital native
 customers.
+
+<br><br>
+
+<img style="float: left; margin: 0 10px 0 0;" src="images/johnny.jpg">Johnny
+is a Senior Solutions Architect working within the Strategic Accounts
+team at AWS. With over 10 years of experience helping customers adopt
+new technologies, he guides them through architecting end-to-end
+solutions spanning infrastructure, big data, and AI.
