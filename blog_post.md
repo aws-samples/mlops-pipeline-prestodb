@@ -1,4 +1,5 @@
-# How Twilio used Amazon SageMaker MLOps Pipelines with PrestoDB to enable frequent model re-training and optimized batch transform
+# How Twilio used Amazon SageMaker MLOps Pipelines with PrestoDB to
+enable frequent model re-training and optimized batch transform
 
 
 *Amit Arora*, *Madhur Prashant*, *Antara Raisa*, *Johnny Chivers*
@@ -25,15 +26,16 @@ integrate into existing production systems and infrastructure to deliver
 value. This necessitates considering the entire ML lifecycle during
 design and development. With the right processes and tools, MLOps
 enables organizations to reliably and efficiently adopt ML across their
-teams for their specific use cases. [Amazon SageMaker
-MLOps](https://aws.amazon.com/sagemaker/mlops/?sagemaker-data-wrangler-whats-new.sort-by=item.additionalFields.postDateTime&sagemaker-data-wrangler-whats-new.sort-order=desc)
-is a suite of features that includes [Amazon SageMaker
-Pipelines](https://aws.amazon.com/sagemaker/pipelines/), which allow for
-straightforward creation and management of ML workflows while also
-offering storage and reuse capabilities for workflow steps, and [Amazon
-SageMaker Model
-Registry](https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry.html),
-which centralizes model tracking, simplifying model deployment.
+teams for their specific use cases. [Amazon
+SageMaker](https://aws.amazon.com/sagemaker/) includes a suite of
+features for MLOps that includes [Amazon SageMaker
+Pipelines](https://aws.amazon.com/sagemaker/pipelines/) and [Amazon
+SageMaker model
+registry](https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry.html).
+Pipelines allow for straightforward creation and management of ML
+workflows while also offering storage and reuse capabilities for
+workflow steps. Model Registry simplifies model deployment by
+centralizing model tracking.
 
 This blog post focuses on enabling AWS customers to have flexibility in
 using their data source of choice and integrate it seamlessly with
@@ -829,6 +831,15 @@ results here, querying data, fetching it, making predictions, etc.\]
 
 mlops-pipeline-prestodb results
 
+## Clean Up Steps
+
+If you decide to clean up the endpoint in service, navigate to the
+`endpoints` section under `inference` on the SageMaker console, select
+the endpoint to be deleted, click on `Actions` and delete the endpoint
+to avoid extra charges.
+
+![](images/delete_ep.png)
+
 ## Conclusion
 
 We have demonstrated an end-to-end MLOps solution on SageMaker. The
@@ -840,17 +851,24 @@ queried from PrestoDB and stored in S3. Furthermore, we deployed the
 latest approved model as a real-time SageMaker endpoint to run
 inferences.
 
-The rise of generative AI increases the demand for training, deploying,
-and running ML models, and consequently, the use of data. By integrating
-SageMaker Processing Jobs with PrestoDB, you can seamlessly migrate your
-workloads to SageMaker pipelines without additional data preparation,
-storage, or accessibility burdens. You can build, train, evaluate, run
-batch inferences, and deploy models as real-time endpoints while
-leveraging your existing data engineering pipelines with minimal or no
-code changes.
+The rise of [generative AI](https://aws.amazon.com/generative-ai/)
+increases the demand for training, deploying, and running ML models, and
+consequently, the use of data. By integrating SageMaker Processing Jobs
+with PrestoDB, you can seamlessly migrate your workloads to SageMaker
+pipelines without additional data preparation, storage, or accessibility
+burdens. You can build, train, evaluate, run batch inferences, and
+deploy models as real-time endpoints while leveraging your existing data
+engineering pipelines with minimal or no code changes.
 
 Explore SageMaker Pipelines, open-source data querying engines like
 PrestoDB, and build a solution using the sample implementation provided.
+
+Get started today by refering to this [GitHub
+repository](https://github.com/aws-samples/mlops-pipeline-prestodb.git).
+
+For more information and tutorials on SageMaker Pipelines, refer to the
+[SageMaker Pipelines
+Documentation](https://docs.aws.amazon.com/search/doc-search.html?searchPath=documentation&searchQuery=sagemaker+pipelines).
 
 Portions of this code are released under the [Apache 2.0
 License](https://aws.amazon.com/apache-2-0/)
