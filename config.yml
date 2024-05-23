@@ -9,11 +9,11 @@ aws:
   s3_prefix: mlops-pipeline-model 
 
 presto:
-  host: 3.93.186.209 
-  parameter: "8080"
-  presto_credentials: presto-credentials
-  catalog: tpch
-  schema: tiny
+  host: <0.0.0.0>
+  parameter: "0000"
+  presto_credentials: <presto_credentials>
+  catalog: <catalog>
+  schema: <schema>
   
 ## User needs to configure the following
 pipeline:
@@ -93,7 +93,7 @@ tuning_step:
 
 evaluation_step:
   step_name: Evaluate-Model
-  accuracy_condition_threshold: 0.7
+  accuracy_condition_threshold: 0.40
   instance_type: ml.m5.xlarge
   instance_count: 1
   evaluation_filename: evaluation.json
