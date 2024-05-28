@@ -149,7 +149,7 @@ network_config:
 
 #### IAM Role
 
-Set up an execution role in [AWS Identity and Access Management (IAM)](https://aws.amazon.com/iam/) with appropriate permissions to allow SageMaker to access [AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html), S3, and other services within your AWS account. ***Until an AWS CloudFormation template is provided that creates the role with the requisite IAM permissions, use a SageMaker execution role that AmazonSageMakerFullAccess AWS managed policy for your execution role.*** Follow the instructions [here](https://github.com/aws-samples/amazon-sagemaker-w-snowflake-as-datasource/tree/main/iam) to create permissions for your `iam` roles.
+Set up an execution role in [AWS Identity and Access Management (IAM)](https://aws.amazon.com/iam/) with appropriate permissions to allow SageMaker to access [AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html) and S3. ***Until an AWS CloudFormation template is provided that creates the role with the requisite IAM permissions, use a SageMaker execution role that AmazonSageMakerFullAccess AWS managed policy for your execution role.***
 
 #### AWS Secrets Manager
 
