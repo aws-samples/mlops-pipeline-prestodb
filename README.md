@@ -11,7 +11,7 @@ To run this code follow the prerequisites below and then run the notebooks in th
 The following prerequisites need to be in place before running this code.
 
 #### PrestoDB
-
+ 
 We will use the built-in datasets available in PrestoDB for this repo. Following the instructions below to setup PrestoDB on an Amazon EC2 instance in your account. ***If you already have access to a PrestoDB instance then you can skip this section but keep its connection details handy (see the `presto` section in the [`config`](./config.yml) file)***.
 
 1. Create a security group to limit access to Presto. Create a security group called **MyPrestoSG** with two inbound rules to only allow access to Presto.

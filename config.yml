@@ -19,7 +19,7 @@ aws:
       # Boolean that determines whether to encrypt inter-container traffic. 
       # Default value is None.
       encrypt_inter_container_traffic: 
-
+ 
 presto:
   host: <your-presto-server-ip>
   parameter: "<your-presto-port-number"

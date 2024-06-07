@@ -10,10 +10,10 @@ from botocore.exceptions import NoCredentialsError
 logging.basicConfig(format='[%(asctime)s] p%(process)s {%(filename)s:%(lineno)d} %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# utility functions
+#utility functions
 
 make_s3_prefix = lambda x, dttm: f"{x}/yyyy={dttm.year}/mm={dttm.month}/dd={dttm.day}/hh={dttm.hour}/mm={dttm.minute}"
-
+ 
 def print_pipeline_execution_summary(steps, name):
     failed_steps = 0
     steps_that_had_to_retried = 0
