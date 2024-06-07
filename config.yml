@@ -2,18 +2,30 @@
 aws:
   region: us-east-1
   # execution role, replace the role name below with the one you are using
-  sagemaker_execution_role_name: your-sagemaker-execution-role
+  sagemaker_execution_role_name: <your-sagemaker-execution-role>
   # the execution role ARN is determined automatically by the code
-  sagemaker_execution_role_arn: arn:aws:iam::{account_id}:role/{role}
+  sagemaker_execution_role_arn: arn:aws:iam::{account_id}:role/service-role/{role}
   s3_bucket: sagemaker-{region}-{account_id} # region and account id are automatically replaced
-  s3_prefix: mlops-pipeline-model 
+  s3_prefix: mlops-pipeline-model
+  # view more information on the network configuration here: 
+  # https://sagemaker.readthedocs.io/en/stable/api/utility/network.html
+  network_config:
+      enable_network_isolation: 
+      # these are list of security groups and subnets
+      # if you have these values configured, mention them
+      # below
+      security_group_ids: 
+      subnets: 
+      # Boolean that determines whether to encrypt inter-container traffic. 
+      # Default value is None.
+      encrypt_inter_container_traffic: 
 
 presto:
-  host: <0.0.0.0>
-  parameter: "0000"
-  presto_credentials: <presto_credentials>
-  catalog: <catalog>
-  schema: <schema>
+  host: <your-presto-server-ip>
+  parameter: "<your-presto-port-number"
+  presto_credentials: <your-presto-server-credentials>
+  catalog: <catalog-for-presto-server>
+  schema: <schema-for-presto-server>
   
 ## User needs to configure the following
 pipeline:
@@ -93,7 +105,7 @@ tuning_step:
 
 evaluation_step:
   step_name: Evaluate-Model
-  accuracy_condition_threshold: 0.40
+  accuracy_condition_threshold: 0.60
   instance_type: ml.m5.xlarge
   instance_count: 1
   evaluation_filename: evaluation.json
