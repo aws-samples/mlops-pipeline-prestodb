@@ -1,2 +1,2 @@
 ## Install the presto python client to connect to the database and extract query
-presto-python-client==0.8.4
+presto-python-client==0.8.4 

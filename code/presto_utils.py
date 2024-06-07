@@ -11,7 +11,7 @@ import pandas as pd
 ## define the logger
 logging.basicConfig(format='[%(asctime)s] p%(process)s {%(filename)s:%(lineno)d} %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
-
+ 
 ## function to connect to the presto server
 def _connect_presto_server(args, username, password, catalog, schema):
     """
