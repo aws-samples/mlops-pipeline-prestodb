@@ -12,7 +12,7 @@ import argparse
 import subprocess
 import numpy as np
 import pandas as pd
-from query import TRAINING_DATA_QUERY
+from query import TRAINING_TRUE_QUERY, TRAINING_NON_TRUE_QUERY
 from presto_utils import fetch_data_from_presto
 
 ## define the logger
@@ -81,10 +81,21 @@ if __name__ == "__main__":
     username = secrets_credentials.get('username', 'ec2-user')
 
     # Fetch data from Presto and store it in a DataFrame
-    df = fetch_data_from_presto(args, username, password, args.presto_catalog, args.presto_schema, TRAINING_DATA_QUERY)
+    print("FETCHING true..")
+    df_1 = fetch_data_from_presto(args, username, password, args.presto_catalog, args.presto_schema, TRAINING_TRUE_QUERY)
+    logger.info(f"FETCHED true, {df_1.shape}")
+    
+    logger.info("FETCHING non-true..")
+    df_0 = fetch_data_from_presto(args, username, password, args.presto_catalog, args.presto_schema, TRAINING_NON_TRUE_QUERY)
+    logger.info(f"FETCHED non-true, {df_0.shape}")
+    
+    df_1["is_true"] = 1
+    df_0["is_true"] = 0
 
-    logger.info("read data of shape={df.shape} for training")
-    logger.info(f"boto3 version={boto3.__version__}, pandas version={pd.__version__}")
+    df = pd.concat([df_1, df_0]).reset_index(drop=True)
+    logger.info(f"FINAL df creared, {df.shape}")
+
+    logger.info(f"read data of shape={df.shape} for training")
     
     # Preprocess the data and split it
     train_data, validation_data, test_data = split_data(df)
