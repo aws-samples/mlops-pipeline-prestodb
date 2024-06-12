@@ -879,9 +879,6 @@ For more information and tutorials on SageMaker Pipelines, refer to the
 [SageMaker Pipelines
 Documentation](https://docs.aws.amazon.com/search/doc-search.html?searchPath=documentation&searchQuery=sagemaker+pipelines).
 
-Portions of this code are released under the [Apache 2.0
-License](https://aws.amazon.com/apache-2-0/)
-
 ------------------------------------------------------------------------
 
 ## Author bio
